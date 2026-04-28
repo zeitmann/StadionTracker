@@ -164,11 +164,25 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
 
   _Screenshots der fertigen Screens: [Screenshots hier einfügen]_
 
-- **Designentscheidungen:**
-  - **Mobile-first mit max. 720px Content-Breite:** Da die Zielgruppe die App primär unterwegs nutzt, wurde der gesamte Designprozess Mobile-first durchgeführt. Auf Desktop wird der Inhalt zentriert mit maximal 720px Breite dargestellt.
-  - **Farbcodierung Grün/Orange:** Grün steht durchgehend für "besucht/erledigt/positiv" (besuchte Stadien, Siege, Home), Orange für "geplant/ausstehend/neutral" (Bucket List, Away, nächster Besuch). Diese konsistente Farbsprache reduziert die kognitive Last.
-  - **Kein Box-Shadow, stattdessen Borders:** Für ein cleanes, modernes Erscheinungsbild werden Karten mit feinen 1px-Borders statt Schatten gestaltet.
-  - **W/D/L-Badges mit JetBrains Mono:** Die kompakten Ergebnis-Badges (Win/Draw/Loss) verwenden eine Monospace-Schrift für technische Anmutung und optimale Lesbarkeit bei kleiner Grösse.
+**Designentscheide**
+
+**Mobile-first** <br>
+Die App wurde für Mobilgeräte (375–390px Breite) konzipiert, da Stadionbesuche hauptsächlich unterwegs erfasst werden. Ein Nutzer steht nach dem Spiel im Stadion und möchte den Besuch direkt auf dem Smartphone eintragen. Desktop wäre für diesen Use Case weniger praktisch.
+
+**Navigation: Bottom Tab Bar** <br>
+Statt einer Top-Menü-Navigation wurde eine **Bottom Tab Bar** mit 4 Tabs gewählt (Dashboard, Besuche, Bucket List, Karte). Begründung:
+- Daumen-freundlich auf Mobilgeräten (erreichbar mit einer Hand)
+- Alle Hauptbereiche sind jederzeit sichtbar und direkt erreichbar
+- Entspricht dem bekannten Muster von iOS/Android-Apps (intuitiv)
+
+**Farbsystem**
+| Farbe | Hex | Verwendung |
+|-------|-----|------------|
+| Primary Green | `#1D9E75` | Aktive Elemente, Buttons, Erfolg (Win), aktiver Tab |
+| Accent Orange | `#D85A30` | Sekundäre Buttons, Bucket-List-Badge, Away-Indikator |
+| Gray | `#888780` | Inaktive Tabs, Labels, Sekundärtext |
+| Red | `#E24B4A` | Loss-Indikator |
+  <br>
   - **Logo:** Stadion von oben (ovale Form) mit Location-Pin in Orange auf dunklem Hintergrund mit grüner Umrandung. Tagline: "Track your ground".
 
 #### 3.4.2. Umsetzung (Technik)
