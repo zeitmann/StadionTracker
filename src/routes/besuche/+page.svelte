@@ -1,4 +1,6 @@
 <script>
+    import VisitCard from '$lib/components/VisitCard.svelte';
+
     let { data, form } = $props();
 
     let showForm = $state(false);
@@ -8,17 +10,6 @@
             showForm = false;
         }
     });
-
-    function getResultBadge(scoreHome, scoreAway) {
-        if (scoreHome > scoreAway) return { label: 'W', class: 'badge-win' };
-        if (scoreHome < scoreAway) return { label: 'L', class: 'badge-loss' };
-        return { label: 'D', class: 'badge-draw' };
-    }
-
-    function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('de-CH', { day: 'numeric', month: 'short', year: 'numeric' });
-    }
 </script>
 
 <svelte:head>
@@ -130,37 +121,7 @@
         {:else}
             <p class="visit-count">{data.visits.length} {data.visits.length === 1 ? 'Besuch' : 'Besuche'}</p>
             {#each data.visits as visit}
-                {@const result = getResultBadge(visit.scoreHome, visit.scoreAway)}
-                <div class="visit-card">
-                    <div class="visit-top">
-                        <div class="visit-info">
-                            <h3>{visit.stadium}</h3>
-                            <p class="visit-location">{visit.city}, {visit.country}</p>
-                        </div>
-                        <span class="badge {result.class}">{result.label}</span>
-                    </div>
-                    <div class="visit-details">
-                        <span class="visit-match">
-                            {visit.homeTeam} {visit.scoreHome} : {visit.scoreAway} {visit.awayTeam}
-                        </span>
-                        <span class="visit-date">{formatDate(visit.date)}</span>
-                    </div>
-                    {#if visit.notes}
-                        <p class="visit-notes">"{visit.notes}"</p>
-                    {/if}
-                    <form method="POST" action="?/delete" class="delete-form">
-                        <input type="hidden" name="id" value={visit._id} />
-                        <button type="submit" class="btn-delete"
-                            onclick={(e) => {
-                                e.preventDefault();
-                                if (confirm('Besuch wirklich löschen?')) {
-                                    e.target.closest('form').submit();
-                                }
-                            }}>
-                            🗑️ Löschen
-                        </button>
-                    </form>
-                </div>
+                <VisitCard {visit} showDelete={true} />
             {/each}
         {/if}
     </div>
@@ -220,22 +181,6 @@
         padding: 14px;
         font-size: 15px;
         margin-top: 8px;
-    }
-
-    .btn-delete {
-        font-family: 'DM Sans', sans-serif;
-        background: none;
-        border: none;
-        color: #E24B4A;
-        font-size: 12px;
-        font-weight: 500;
-        cursor: pointer;
-        padding: 4px 0;
-        transition: opacity 0.2s;
-    }
-
-    .btn-delete:hover {
-        opacity: 0.7;
     }
 
     /* Alerts */
@@ -318,95 +263,6 @@
         font-size: 13px;
         color: #6B6B63;
         margin-bottom: 12px;
-    }
-
-    .visit-card {
-        background: #FFFFFF;
-        border: 1px solid #EDEDEB;
-        border-radius: 14px;
-        padding: 14px 16px;
-        margin-bottom: 10px;
-    }
-
-    .visit-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 8px;
-    }
-
-    .visit-info h3 {
-        font-family: 'DM Sans', sans-serif;
-        font-size: 15px;
-        font-weight: 700;
-        color: #1A1A18;
-        margin: 0;
-    }
-
-    .visit-location {
-        font-family: 'DM Sans', sans-serif;
-        font-size: 13px;
-        color: #6B6B63;
-        margin: 2px 0 0 0;
-    }
-
-    .visit-details {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 8px;
-        border-top: 1px solid #F5F5F3;
-    }
-
-    .visit-match {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 13px;
-        font-weight: 600;
-        color: #1A1A18;
-    }
-
-    .visit-date {
-        font-family: 'DM Sans', sans-serif;
-        font-size: 12px;
-        color: #A3A39B;
-    }
-
-    .visit-notes {
-        font-family: 'DM Sans', sans-serif;
-        font-size: 13px;
-        color: #6B6B63;
-        font-style: italic;
-        margin: 8px 0 0 0;
-    }
-
-    .delete-form {
-        margin-top: 8px;
-        text-align: right;
-    }
-
-    /* Badge */
-    .badge {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 13px;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 8px;
-        letter-spacing: 0.02em;
-    }
-
-    .badge-win {
-        background: rgba(29, 158, 117, 0.08);
-        color: #1D9E75;
-    }
-
-    .badge-loss {
-        background: rgba(226, 75, 74, 0.12);
-        color: #E24B4A;
-    }
-
-    .badge-draw {
-        background: rgba(136, 135, 128, 0.12);
-        color: #888780;
     }
 
     /* Empty State */
