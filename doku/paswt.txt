@@ -1,5 +1,0 @@
-Mongodb user
-username: StadionTracker
-password: stadiontracker
-
-mongodb+srv://StadionTracker:stadiontracker@cluster0.v3hjcar.mongodb.net/?appName=Cluster0
