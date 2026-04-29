@@ -46,6 +46,41 @@ export const actions = {
         return { success: true };
     },
 
+    update: async ({ request }) => {
+        const formData = await request.formData();
+        const id = formData.get('id');
+
+        const visit = {
+            stadium: formData.get('stadium'),
+            city: formData.get('city'),
+            country: formData.get('country'),
+            homeTeam: formData.get('homeTeam'),
+            awayTeam: formData.get('awayTeam'),
+            scoreHome: parseInt(formData.get('scoreHome')) || 0,
+            scoreAway: parseInt(formData.get('scoreAway')) || 0,
+            date: formData.get('date'),
+            notes: formData.get('notes') || ''
+        };
+
+        // Einfache Validierung
+        if (!visit.stadium || !visit.city || !visit.country || !visit.homeTeam || !visit.awayTeam || !visit.date) {
+            return {
+                success: false,
+                error: 'Bitte fülle alle Pflichtfelder aus.'
+            };
+        }
+
+        try {
+            await db.collection('visits').updateOne(
+                { _id: new ObjectId(id) },
+                { $set: visit }
+            );
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: 'Fehler beim Speichern' };
+        }
+    },
+
     delete: async ({ request }) => {
         const formData = await request.formData();
         const id = formData.get('id');

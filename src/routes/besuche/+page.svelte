@@ -10,6 +10,27 @@
             showForm = false;
         }
     });
+
+    async function handleSaveVisit(visitData) {
+        const formData = new FormData();
+        formData.append('id', visitData.id);
+        formData.append('stadium', visitData.stadium);
+        formData.append('city', visitData.city);
+        formData.append('country', visitData.country);
+        formData.append('homeTeam', visitData.homeTeam);
+        formData.append('awayTeam', visitData.awayTeam);
+        formData.append('scoreHome', visitData.scoreHome);
+        formData.append('scoreAway', visitData.scoreAway);
+        formData.append('date', visitData.date);
+        formData.append('notes', visitData.notes);
+
+        const response = await fetch('?/update', {
+            method: 'POST',
+            body: formData
+        });
+
+        return response.ok;
+    }
 </script>
 
 <svelte:head>
@@ -121,7 +142,7 @@
         {:else}
             <p class="visit-count">{data.visits.length} {data.visits.length === 1 ? 'Besuch' : 'Besuche'}</p>
             {#each data.visits as visit}
-                <VisitCard {visit} showDelete={true} />
+                <VisitCard {visit} showDelete={true} onSave={handleSaveVisit} />
             {/each}
         {/if}
     </div>
@@ -129,7 +150,7 @@
 
 <style>
     .page {
-        padding: 16px;
+        padding: 16px 16px 80px 16px;
         max-width: 720px;
         margin: 0 auto;
     }

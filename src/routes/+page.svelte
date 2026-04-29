@@ -87,7 +87,7 @@
 
 <style>
     .page {
-        padding: 16px;
+        padding: 16px 16px 80px 16px;
         max-width: 720px;
         margin: 0 auto;
         background: #FAFAF8;
