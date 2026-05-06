@@ -5,7 +5,7 @@
     let { stadion } = $props();
 </script>
 
-<div class="visit-card">
+<div class="stadium-card">
     <div class="visit-top">
         <div class="visit-info">
             <h3>{stadion.name}</h3>
@@ -42,12 +42,18 @@
 </div>
 
 <style>
-    .visit-card {
+    .stadium-card {
         background: #ffffff;
         border: 1px solid #ededeb;
         border-radius: 14px;
         padding: 14px 16px;
         margin-bottom: 10px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .stadium-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(26, 26, 24, 0.10);
     }
 
     .visit-top {

@@ -1,5 +1,6 @@
 <script>
 	import { Pencil, Trash2 } from 'lucide-svelte';
+	import ResultBadge from '$lib/components/ResultBadge.svelte';
 
 	let { visit, showDelete = false, compact = false, onSave } = $props();
 
@@ -15,12 +16,6 @@
 		date: visit.date,
 		notes: visit.notes
 	});
-
-	function getResultBadge(scoreHome, scoreAway) {
-		if (scoreHome > scoreAway) return { label: 'W', class: 'badge-win' };
-		if (scoreHome < scoreAway) return { label: 'L', class: 'badge-loss' };
-		return { label: 'D', class: 'badge-draw' };
-	}
 
 	function formatDate(dateStr) {
 		const date = new Date(dateStr);
@@ -57,7 +52,10 @@
 		}
 	}
 
-	const result = getResultBadge(visit.scoreHome, visit.scoreAway);
+	let resultLabel = $derived(
+		visit.scoreHome > visit.scoreAway ? 'W' :
+		visit.scoreHome < visit.scoreAway ? 'L' : 'D'
+	);
 	const formattedDate = formatDate(visit.date);
 </script>
 
@@ -65,7 +63,7 @@
 	{#if compact}
 		<!-- Kompakte Version für Dashboard -->
 		<div class="compact-content">
-			<span class="badge {result.class}">{result.label}</span>
+			<ResultBadge result={resultLabel} />
 			<div class="compact-info">
 				<span class="match">{visit.homeTeam} {visit.scoreHome}:{visit.scoreAway} {visit.awayTeam}</span>
 				<span class="meta">{visit.stadiumName} · {formattedDate}</span>
@@ -171,7 +169,7 @@
 					<h3>{visit.stadiumName}</h3>
 					<p class="visit-location">{visit.city}, {visit.country}</p>
 				</div>
-				<span class="badge {result.class}">{result.label}</span>
+				<ResultBadge result={resultLabel} />
 			</div>
 			<div class="visit-details">
 				<span class="visit-match">
@@ -215,7 +213,12 @@
 		border-radius: 14px;
 		padding: 14px 16px;
 		margin-bottom: 10px;
-		transition: all 0.3s ease;
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+	}
+
+	.visit-card:not(.compact):not(.editing):hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 16px rgba(26, 26, 24, 0.10);
 	}
 
 	.visit-card.editing {
@@ -442,23 +445,6 @@
 		cursor: pointer;
 		padding: 4px 0;
 	}
-
-	.badge {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 13px;
-		font-weight: 700;
-		width: 28px;
-		height: 28px;
-		min-width: 28px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 8px;
-	}
-
-	.badge-win { background: rgba(29, 158, 117, 0.08); color: #1d9e75; }
-	.badge-loss { background: rgba(226, 75, 74, 0.12); color: #e24b4a; }
-	.badge-draw { background: rgba(136, 135, 128, 0.12); color: #888780; }
 
 	@media (max-width: 480px) {
 		.form-row { flex-direction: column; gap: 0; }

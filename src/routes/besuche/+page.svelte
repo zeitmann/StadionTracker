@@ -190,11 +190,29 @@
         font-size: 14px;
         font-weight: 600;
         cursor: pointer;
-        transition: background 0.2s ease;
+        transition: background 0.2s ease, transform 0.15s ease;
     }
 
     .btn-primary:hover {
-        background: #178a65;
+        background: #18896a;
+        transform: translateY(-1px);
+    }
+
+    .btn-danger {
+        font-family: 'DM Sans', sans-serif;
+        background: #e24b4a;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .btn-danger:hover {
+        background: #c94040;
     }
 
     .btn-full {

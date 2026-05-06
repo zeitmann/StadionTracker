@@ -1,5 +1,6 @@
 <script>
     import VisitCard from '$lib/components/VisitCard.svelte';
+    import ResultBadge from '$lib/components/ResultBadge.svelte';
     import { Building2, CalendarDays, Globe, Trophy, BarChart2, Clock } from 'lucide-svelte';
 
     let { data } = $props();
