@@ -1,11 +1,12 @@
 <script>
 	import { page } from '$app/stores';
+	import { LayoutDashboard, CalendarDays, Bookmark, Map } from 'lucide-svelte';
 
 	const tabs = [
-		{ label: 'Dashboard', href: '/', icon: '⊞' },
-		{ label: 'Besuche', href: '/besuche', icon: '📅' },
-		{ label: 'Bucketlist', href: '/bucket-list', icon: '📋' },
-		{ label: 'Karte', href: '/karte', icon: '🗺' }
+		{ label: 'Dashboard', href: '/', icon: LayoutDashboard },
+		{ label: 'Besuche', href: '/besuche', icon: CalendarDays },
+		{ label: 'Bucketlist', href: '/bucket-list', icon: Bookmark },
+		{ label: 'Karte', href: '/karte', icon: Map }
 	];
 
 	function isActive(href) {
@@ -16,12 +17,13 @@
 <nav class="tab-navigation">
 	<div class="tabs-container">
 		{#each tabs as tab}
+			{@const Icon = tab.icon}
 			<a
 				href={tab.href}
 				class="tab {isActive(tab.href) ? 'active' : ''}"
 				aria-current={isActive(tab.href) ? 'page' : undefined}
 			>
-				<span class="tab-icon">{tab.icon}</span>
+				<span class="tab-icon"><Icon size={22} strokeWidth={1.75} /></span>
 				<span class="tab-label">{tab.label}</span>
 			</a>
 		{/each}
@@ -75,8 +77,7 @@
 	}
 
 	.tab-icon {
-		font-size: 20px;
-		display: block;
+		display: flex;
 	}
 
 	.tab-label {

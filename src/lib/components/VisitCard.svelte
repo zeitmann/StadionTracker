@@ -1,4 +1,6 @@
 <script>
+	import { Pencil, Trash2 } from 'lucide-svelte';
+
 	let { visit, showDelete = false, compact = false, onSave } = $props();
 
 	let isEditing = $state(false);
@@ -182,7 +184,7 @@
 			{/if}
 			<div class="action-buttons">
 				<button type="button" class="btn-edit" onclick={openEdit}>
-					✏️ Bearbeiten
+					<Pencil size={15} strokeWidth={1.75} /> Bearbeiten
 				</button>
 				{#if showDelete}
 					<form method="POST" action="?/delete" class="delete-form">
@@ -197,7 +199,7 @@
 								}
 							}}
 						>
-							🗑️ Löschen
+							<Trash2 size={15} strokeWidth={1.75} /> Löschen
 						</button>
 					</form>
 				{/if}
@@ -414,6 +416,9 @@
 	}
 
 	.btn-edit {
+		display: flex;
+		align-items: center;
+		gap: 4px;
 		font-family: 'DM Sans', sans-serif;
 		background: none;
 		border: none;
@@ -425,6 +430,9 @@
 	}
 
 	.btn-delete {
+		display: flex;
+		align-items: center;
+		gap: 4px;
 		font-family: 'DM Sans', sans-serif;
 		background: none;
 		border: none;

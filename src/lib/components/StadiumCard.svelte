@@ -1,5 +1,7 @@
 <script>
     import { enhance } from '$app/forms';
+    import { Star, Check, Trash2 } from 'lucide-svelte';
+
     let { stadion } = $props();
 </script>
 
@@ -9,7 +11,7 @@
             <h3>{stadion.name}</h3>
             <p class="visit-location">{stadion.city}, {stadion.country}</p>
         </div>
-        <span class="badge">⭐ Bucket List</span>
+        <span class="badge"><Star size={15} strokeWidth={1.75} /> Bucket List</span>
     </div>
 
     {#if stadion.capacity}
@@ -21,7 +23,7 @@
     <div class="action-buttons">
         <form method="POST" action="?/markVisited" use:enhance class="action-form">
             <input type="hidden" name="id" value={stadion._id} />
-            <button type="submit" class="btn-visited">✓ Als besucht markieren</button>
+            <button type="submit" class="btn-visited"><Check size={15} strokeWidth={1.75} /> Als besucht markieren</button>
         </form>
         <form method="POST" action="?/remove" use:enhance class="action-form">
             <input type="hidden" name="id" value={stadion._id} />
@@ -34,7 +36,7 @@
                         e.target.closest('form').submit();
                     }
                 }}
-            >🗑️ Entfernen</button>
+            ><Trash2 size={15} strokeWidth={1.75} /> Entfernen</button>
         </form>
     </div>
 </div>
@@ -85,6 +87,9 @@
     }
 
     .badge {
+        display: flex;
+        align-items: center;
+        gap: 4px;
         font-family: 'JetBrains Mono', monospace;
         font-size: 11px;
         color: #D85A30;
@@ -106,6 +111,9 @@
     }
 
     .btn-visited {
+        display: flex;
+        align-items: center;
+        gap: 4px;
         font-family: 'DM Sans', sans-serif;
         background: none;
         border: none;
@@ -117,6 +125,9 @@
     }
 
     .btn-remove {
+        display: flex;
+        align-items: center;
+        gap: 4px;
         font-family: 'DM Sans', sans-serif;
         background: none;
         border: none;

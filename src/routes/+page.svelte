@@ -1,5 +1,6 @@
 <script>
     import VisitCard from '$lib/components/VisitCard.svelte';
+    import { Building2, CalendarDays, Globe, Trophy, BarChart2, Clock } from 'lucide-svelte';
 
     let { data } = $props();
 </script>
@@ -18,19 +19,19 @@
     <!-- Statistik-Karten -->
     <div class="stats-grid">
         <div class="stat-card">
-            <span class="stat-label">🏟 Stadien</span>
+            <span class="stat-label"><Building2 size={18} strokeWidth={1.75} /> Stadien</span>
             <span class="stat-value accent-green">{data.stats.uniqueStadiums}</span>
         </div>
         <div class="stat-card">
-            <span class="stat-label">🎫 Besuche</span>
+            <span class="stat-label"><CalendarDays size={18} strokeWidth={1.75} /> Besuche</span>
             <span class="stat-value">{data.stats.totalVisits}</span>
         </div>
         <div class="stat-card">
-            <span class="stat-label">🌍 Länder</span>
+            <span class="stat-label"><Globe size={18} strokeWidth={1.75} /> Länder</span>
             <span class="stat-value">{data.stats.uniqueCountries}</span>
         </div>
         <div class="stat-card">
-            <span class="stat-label">🏆 Win-Rate</span>
+            <span class="stat-label"><Trophy size={18} strokeWidth={1.75} /> Win-Rate</span>
             <span class="stat-value {data.stats.winRate >= 50 ? 'accent-green' : 'accent-red'}">{data.stats.winRate}%</span>
         </div>
     </div>
@@ -38,7 +39,7 @@
     <!-- W/D/L Übersicht -->
     <div class="card">
         <div class="card-header">
-            <span>⚽ Bilanz</span>
+            <span class="icon-label"><BarChart2 size={18} strokeWidth={1.75} /> Bilanz</span>
             <span class="card-header-right">{data.stats.totalVisits} Spiele</span>
         </div>
         <div class="wdl-bar">
@@ -58,7 +59,7 @@
     <!-- Länder-Breakdown -->
     {#if data.countries.length > 0}
         <div class="card">
-            <div class="card-title">🌍 Länder-Breakdown</div>
+            <div class="card-title"><Globe size={18} strokeWidth={1.75} /> Länder-Breakdown</div>
             <div class="country-list">
                 {#each data.countries as country}
                     <div class="country-row">
@@ -74,7 +75,7 @@
     <!-- Letzte Besuche -->
     {#if data.recentVisits.length > 0}
         <div class="card">
-            <div class="card-title">📅 Letzte Besuche</div>
+            <div class="card-title"><Clock size={18} strokeWidth={1.75} /> Letzte Besuche</div>
             <div class="recent-list">
                 {#each data.recentVisits as visit}
                     <VisitCard {visit} compact={true} />
@@ -134,6 +135,9 @@
     }
 
     .stat-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
         font-family: 'DM Sans', sans-serif;
         font-size: 13px;
         color: #6B6B63;
@@ -179,11 +183,20 @@
     }
 
     .card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         font-family: 'DM Sans', sans-serif;
         font-size: 15px;
         font-weight: 700;
         color: #1A1A18;
         margin-bottom: 14px;
+    }
+
+    .icon-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
     /* W/D/L Bar */
