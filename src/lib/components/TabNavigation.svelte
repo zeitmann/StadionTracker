@@ -4,7 +4,7 @@
 	const tabs = [
 		{ label: 'Dashboard', href: '/', icon: '⊞' },
 		{ label: 'Besuche', href: '/besuche', icon: '📅' },
-		{ label: 'Bucketlist', href: '/bucketlist', icon: '📋' },
+		{ label: 'Bucketlist', href: '/bucket-list', icon: '📋' },
 		{ label: 'Karte', href: '/karte', icon: '🗺' }
 	];
 

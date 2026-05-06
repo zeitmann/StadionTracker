@@ -3,7 +3,7 @@
 
 	let isEditing = $state(false);
 	let formData = $state({
-		stadium: visit.stadium,
+		stadiumName: visit.stadiumName,
 		city: visit.city,
 		country: visit.country,
 		homeTeam: visit.homeTeam,
@@ -32,7 +32,7 @@
 	function closeEdit() {
 		isEditing = false;
 		formData = {
-			stadium: visit.stadium,
+			stadiumName: visit.stadiumName,
 			city: visit.city,
 			country: visit.country,
 			homeTeam: visit.homeTeam,
@@ -46,12 +46,10 @@
 
 	async function handleSave() {
 		if (!onSave) return;
-		
 		const success = await onSave({
 			id: visit._id,
 			...formData
 		});
-		
 		if (success) {
 			isEditing = false;
 		}
@@ -68,66 +66,43 @@
 			<span class="badge {result.class}">{result.label}</span>
 			<div class="compact-info">
 				<span class="match">{visit.homeTeam} {visit.scoreHome}:{visit.scoreAway} {visit.awayTeam}</span>
-				<span class="meta">{visit.stadium} · {formattedDate}</span>
+				<span class="meta">{visit.stadiumName} · {formattedDate}</span>
 			</div>
 		</div>
 	{:else if isEditing}
 		<!-- Edit Modus -->
 		<div class="edit-mode">
 			<h3 class="edit-title">Besuch bearbeiten</h3>
-			
+
 			<div class="form-group">
-				<label for="stadium-{visit._id}">Stadion *</label>
-				<input 
-					type="text" 
+				<label for="stadium-{visit._id}">Stadion</label>
+				<input
+					type="text"
 					id="stadium-{visit._id}"
-					bind:value={formData.stadium} 
-					placeholder="z.B. Signal Iduna Park" 
-					required
+					bind:value={formData.stadiumName}
+					placeholder="z.B. Signal Iduna Park"
+					disabled
 				/>
 			</div>
 
 			<div class="form-row">
 				<div class="form-group">
-					<label for="city-{visit._id}">Stadt *</label>
-					<input 
-						type="text" 
-						id="city-{visit._id}"
-						bind:value={formData.city} 
-						placeholder="z.B. Dortmund" 
-						required
-					/>
-				</div>
-				<div class="form-group">
-					<label for="country-{visit._id}">Land *</label>
-					<input 
-						type="text" 
-						id="country-{visit._id}"
-						bind:value={formData.country} 
-						placeholder="z.B. Deutschland" 
-						required
-					/>
-				</div>
-			</div>
-
-			<div class="form-row">
-				<div class="form-group">
 					<label for="homeTeam-{visit._id}">Heimteam *</label>
-					<input 
-						type="text" 
+					<input
+						type="text"
 						id="homeTeam-{visit._id}"
-						bind:value={formData.homeTeam} 
-						placeholder="z.B. BVB" 
+						bind:value={formData.homeTeam}
+						placeholder="z.B. BVB"
 						required
 					/>
 				</div>
 				<div class="form-group">
 					<label for="awayTeam-{visit._id}">Auswärtsteam *</label>
-					<input 
-						type="text" 
+					<input
+						type="text"
 						id="awayTeam-{visit._id}"
-						bind:value={formData.awayTeam} 
-						placeholder="z.B. Bayern" 
+						bind:value={formData.awayTeam}
+						placeholder="z.B. Bayern"
 						required
 					/>
 				</div>
@@ -136,32 +111,32 @@
 			<div class="form-row">
 				<div class="form-group">
 					<label for="scoreHome-{visit._id}">Tore Heim *</label>
-					<input 
-						type="number" 
+					<input
+						type="number"
 						id="scoreHome-{visit._id}"
-						bind:value={formData.scoreHome} 
-						min="0" 
-						placeholder="0" 
+						bind:value={formData.scoreHome}
+						min="0"
+						placeholder="0"
 						required
 					/>
 				</div>
 				<div class="form-group">
 					<label for="scoreAway-{visit._id}">Tore Auswärts *</label>
-					<input 
-						type="number" 
+					<input
+						type="number"
 						id="scoreAway-{visit._id}"
-						bind:value={formData.scoreAway} 
-						min="0" 
-						placeholder="0" 
+						bind:value={formData.scoreAway}
+						min="0"
+						placeholder="0"
 						required
 					/>
 				</div>
 				<div class="form-group">
 					<label for="date-{visit._id}">Datum *</label>
-					<input 
-						type="date" 
+					<input
+						type="date"
 						id="date-{visit._id}"
-						bind:value={formData.date} 
+						bind:value={formData.date}
 						required
 					/>
 				</div>
@@ -169,9 +144,9 @@
 
 			<div class="form-group">
 				<label for="notes-{visit._id}">Notizen (optional)</label>
-				<textarea 
+				<textarea
 					id="notes-{visit._id}"
-					bind:value={formData.notes} 
+					bind:value={formData.notes}
 					placeholder="z.B. Tolle Atmosphäre!"
 					rows="3"
 				></textarea>
@@ -191,7 +166,7 @@
 		<div class="view-mode">
 			<div class="visit-top">
 				<div class="visit-info">
-					<h3>{visit.stadium}</h3>
+					<h3>{visit.stadiumName}</h3>
 					<p class="visit-location">{visit.city}, {visit.country}</p>
 				</div>
 				<span class="badge {result.class}">{result.label}</span>
@@ -252,7 +227,6 @@
 		margin-bottom: 0;
 	}
 
-	/* Compact Version */
 	.compact-content {
 		display: flex;
 		align-items: center;
@@ -285,18 +259,13 @@
 		color: #6b6b63;
 	}
 
-	/* Edit Modus */
 	.edit-mode {
 		animation: expandHeight 0.3s ease;
 	}
 
 	@keyframes expandHeight {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
+		from { opacity: 0; }
+		to { opacity: 1; }
 	}
 
 	.edit-title {
@@ -341,9 +310,9 @@
 		border-color: #1d9e75;
 	}
 
-	.form-group input::placeholder,
-	.form-group textarea::placeholder {
+	.form-group input:disabled {
 		color: #a3a39b;
+		cursor: not-allowed;
 	}
 
 	.form-row {
@@ -368,11 +337,6 @@
 		font-size: 13px;
 		font-weight: 600;
 		cursor: pointer;
-		transition: background 0.2s;
-	}
-
-	.btn-save:hover {
-		background: #178a65;
 	}
 
 	.btn-cancel {
@@ -385,14 +349,8 @@
 		font-size: 13px;
 		font-weight: 600;
 		cursor: pointer;
-		transition: background 0.2s;
 	}
 
-	.btn-cancel:hover {
-		background: #f5f5f3;
-	}
-
-	/* View Modus */
 	.visit-top {
 		display: flex;
 		justify-content: space-between;
@@ -464,14 +422,19 @@
 		font-weight: 500;
 		cursor: pointer;
 		padding: 4px 0;
-		transition: opacity 0.2s;
 	}
 
-	.btn-edit:hover {
-		opacity: 0.7;
+	.btn-delete {
+		font-family: 'DM Sans', sans-serif;
+		background: none;
+		border: none;
+		color: #e24b4a;
+		font-size: 12px;
+		font-weight: 500;
+		cursor: pointer;
+		padding: 4px 0;
 	}
 
-	/* Badge */
 	.badge {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 13px;
@@ -483,45 +446,13 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: 8px;
-		letter-spacing: 0.02em;
 	}
 
-	.badge-win {
-		background: rgba(29, 158, 117, 0.08);
-		color: #1d9e75;
-	}
-
-	.badge-loss {
-		background: rgba(226, 75, 74, 0.12);
-		color: #e24b4a;
-	}
-
-	.badge-draw {
-		background: rgba(136, 135, 128, 0.12);
-		color: #888780;
-	}
-
-	/* Delete Button */
-	.btn-delete {
-		font-family: 'DM Sans', sans-serif;
-		background: none;
-		border: none;
-		color: #e24b4a;
-		font-size: 12px;
-		font-weight: 500;
-		cursor: pointer;
-		padding: 4px 0;
-		transition: opacity 0.2s;
-	}
-
-	.btn-delete:hover {
-		opacity: 0.7;
-	}
+	.badge-win { background: rgba(29, 158, 117, 0.08); color: #1d9e75; }
+	.badge-loss { background: rgba(226, 75, 74, 0.12); color: #e24b4a; }
+	.badge-draw { background: rgba(136, 135, 128, 0.12); color: #888780; }
 
 	@media (max-width: 480px) {
-		.form-row {
-			flex-direction: column;
-			gap: 0;
-		}
+		.form-row { flex-direction: column; gap: 0; }
 	}
 </style>
