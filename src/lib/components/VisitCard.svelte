@@ -63,7 +63,6 @@
 	{#if compact}
 		<!-- Kompakte Version für Dashboard -->
 		<div class="compact-content">
-			<ResultBadge result={resultLabel} />
 			<div class="compact-info">
 				<span class="match">{visit.homeTeam} {visit.scoreHome}:{visit.scoreAway} {visit.awayTeam}</span>
 				<span class="meta">{visit.stadiumName} · {formattedDate}</span>
@@ -169,7 +168,6 @@
 					<h3>{visit.stadiumName}</h3>
 					<p class="visit-location">{visit.city}, {visit.country}</p>
 				</div>
-				<ResultBadge result={resultLabel} />
 			</div>
 			<div class="visit-details">
 				<span class="visit-match">

@@ -1,7 +1,7 @@
 <script>
     import VisitCard from '$lib/components/VisitCard.svelte';
     import ResultBadge from '$lib/components/ResultBadge.svelte';
-    import { Building2, CalendarDays, Globe, Trophy, BarChart2, Clock } from 'lucide-svelte';
+    import { Building2, CalendarDays, Globe, Clock } from 'lucide-svelte';
 
     let { data } = $props();
 </script>
@@ -30,30 +30,6 @@
         <div class="stat-card">
             <span class="stat-label"><Globe size={18} strokeWidth={1.75} /> Länder</span>
             <span class="stat-value">{data.stats.uniqueCountries}</span>
-        </div>
-        <div class="stat-card">
-            <span class="stat-label"><Trophy size={18} strokeWidth={1.75} /> Win-Rate</span>
-            <span class="stat-value {data.stats.winRate >= 50 ? 'accent-green' : 'accent-red'}">{data.stats.winRate}%</span>
-        </div>
-    </div>
-
-    <!-- W/D/L Übersicht -->
-    <div class="card">
-        <div class="card-header">
-            <span class="icon-label"><BarChart2 size={18} strokeWidth={1.75} /> Bilanz</span>
-            <span class="card-header-right">{data.stats.totalVisits} Spiele</span>
-        </div>
-        <div class="wdl-bar">
-            {#if data.stats.totalVisits > 0}
-                <div class="wdl-segment wdl-win" style="width: {(data.stats.wins / data.stats.totalVisits) * 100}%"></div>
-                <div class="wdl-segment wdl-draw" style="width: {(data.stats.draws / data.stats.totalVisits) * 100}%"></div>
-                <div class="wdl-segment wdl-loss" style="width: {(data.stats.losses / data.stats.totalVisits) * 100}%"></div>
-            {/if}
-        </div>
-        <div class="wdl-labels">
-            <span class="wdl-label-win">W {data.stats.wins}</span>
-            <span class="wdl-label-draw">D {data.stats.draws}</span>
-            <span class="wdl-label-loss">L {data.stats.losses}</span>
         </div>
     </div>
 
@@ -152,14 +128,6 @@
         letter-spacing: -0.02em;
     }
 
-    .stat-value.accent-green {
-        color: #1D9E75;
-    }
-
-    .stat-value.accent-red {
-        color: #E24B4A;
-    }
-
     /* Card */
     .card {
         background: #FFFFFF;
@@ -167,20 +135,6 @@
         border-radius: 14px;
         padding: 16px;
         margin-bottom: 12px;
-    }
-
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 13px;
-        color: #6B6B63;
-        margin-bottom: 12px;
-    }
-
-    .card-header-right {
-        font-weight: 500;
     }
 
     .card-title {
@@ -193,43 +147,6 @@
         color: #1A1A18;
         margin-bottom: 14px;
     }
-
-    .icon-label {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    /* W/D/L Bar */
-    .wdl-bar {
-        display: flex;
-        height: 8px;
-        border-radius: 4px;
-        overflow: hidden;
-        gap: 2px;
-        margin-bottom: 8px;
-    }
-
-    .wdl-segment {
-        border-radius: 4px;
-        transition: width 0.4s ease;
-    }
-
-    .wdl-win { background: #1D9E75; }
-    .wdl-draw { background: #888780; }
-    .wdl-loss { background: #E24B4A; }
-
-    .wdl-labels {
-        display: flex;
-        justify-content: space-between;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .wdl-label-win { color: #1D9E75; }
-    .wdl-label-draw { color: #888780; }
-    .wdl-label-loss { color: #E24B4A; }
 
     /* Country List */
     .country-list {

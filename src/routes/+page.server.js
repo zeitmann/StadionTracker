@@ -18,17 +18,6 @@ export async function load() {
     const uniqueStadiums = new Set(visits.map(v => v.stadiumId.toString())).size;
     const uniqueCountries = new Set(visits.map(v => v.stadium.Nation)).size;
 
-    // Win/Draw/Loss
-    let wins = 0,
-        draws = 0,
-        losses = 0;
-    visits.forEach(v => {
-        if (v.result === 'W') wins++;
-        else if (v.result === 'L') losses++;
-        else draws++;
-    });
-    const winRate = totalVisits > 0 ? Math.round((wins / totalVisits) * 100) : 0;
-
     // Länder-Breakdown
     const countryMap = {};
     visits.forEach(v => {
@@ -65,7 +54,7 @@ export async function load() {
     }));
 
     return {
-        stats: { totalVisits, uniqueStadiums, uniqueCountries, wins, draws, losses, winRate },
+        stats: { totalVisits, uniqueStadiums, uniqueCountries },
         countries,
         recentVisits
     };
