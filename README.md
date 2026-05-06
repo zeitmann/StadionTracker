@@ -41,7 +41,7 @@ Der **Stadium Tracker** ist eine responsive Webapplikation (Mobile-first), die F
   - **Dashboard:** Gesamtübersicht mit Statistiken (Anzahl Stadien, Besuche, Länder, Win-Rate), W/D/L-Bilanz, Länder-Breakdown und den letzten Besuchen.
   - **Besuche erfassen & verwalten:** Formular zur Erfassung neuer Stadionbesuche mit Stadion, Stadt, Land, Datum, Teams, Ergebnis und optionalen Notizen. Chronologische Liste aller bisherigen Besuche mit Löschen-Funktion.
   - **Bucket List:** _(geplant)_ Wunsch-Stadien mit Name, Stadt, Land und Kapazität hinzufügen. Stadien können als "besucht" markiert werden und wechseln dann in die Besuchshistorie.
-  - **Interaktive Karte:** _(geplant)_ Europakarte mit farbcodierten Markern — Grün für besuchte Stadien, Orange für Bucket-List-Stadien. Klick auf einen Marker zeigt Details im Tooltip.
+  - **Interaktive Karte:** Europakarte mit farbcodierten CircleMarkern — Grün für besuchte Stadien, Orange für Bucket-List-Stadien. Klick auf einen Marker öffnet einen Tooltip mit Stadionname und Ort. Eine scrollbare Stadionliste unterhalb der Karte erlaubt Navigation per Klick (flyTo auf den Marker). Mehrfach besuchte Stadien werden als ein Marker mit Besuchszähler dargestellt.
 
 - **Annahmen [Optional]:**
   - Fussballfans möchten ihre Stadionbesuche aktiv dokumentieren und nicht nur in Erinnerungen behalten.
@@ -146,7 +146,7 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
   | Dashboard | Übersicht & Motivation | Stats (Stadien, Besuche, Länder, Win-Rate), W/D/L-Bilanz, Länder-Breakdown, letzte Besuche |
   | Besuche | Erfassen & Browsen | Formular zur Erfassung neuer Besuche, chronologische Liste aller Besuche mit W/D/L-Badges |
   | Bucket List | Wunschliste verwalten | _(geplant)_ Stadien zur Bucket List hinzufügen, als besucht markieren |
-  | Karte | Geographische Visualisierung | _(geplant)_ Interaktive Karte mit farbcodierten Markern |
+  | Karte | Geographische Visualisierung | Interaktive Leaflet-Karte, CircleMarker (Grün = besucht, Orange = Bucket List), Tooltip bei Marker-Klick, Stadionliste mit flyTo-Navigation, Legende |
 
   Die Navigation folgt dem bekannten Tab-Bar-Pattern (wie Instagram, Spotify). Jeder Tab ist eigenständig und hat keine verschachtelten Unterseiten — die Formulare öffnen sich inline innerhalb des jeweiligen Tabs.
 
@@ -178,6 +178,7 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
 - **Technologie-Stack:**
   - **Frontend-Framework:** SvelteKit (Svelte 5 mit Runes-Modus) — HTML/CSS/JavaScript
   - **Datenbank:** MongoDB Atlas (Free Tier, Cloud-hosted) mit der `mongodb` Node.js Library
+  - **Kartenbibliothek:** Leaflet.js (v1.x) — clientseitige interaktive Karte mit OpenStreetMap-Tiles
   - **Fonts:** DM Sans und JetBrains Mono (Google Fonts)
   - **Styling:** Eigenes CSS mit Scoped Styles pro Komponente (kein CSS-Framework wie Bootstrap)
 
@@ -204,9 +205,15 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
   │   │   ├── +layout.svelte          # Globales Layout
   │   │   ├── +page.svelte            # Dashboard (Startseite)
   │   │   ├── +page.server.js         # Dashboard Server-Logik
-  │   │   └── besuche/
-  │   │       ├── +page.svelte        # Besuche-Seite (Liste + Formular)
-  │   │       └── +page.server.js     # Besuche CRUD-Operationen
+  │   │   ├── besuche/
+  │   │   │   ├── +page.svelte        # Besuche-Seite (Liste + Formular)
+  │   │   │   └── +page.server.js     # Besuche CRUD-Operationen
+  │   │   ├── bucket-list/
+  │   │   │   ├── +page.svelte        # Bucket-List-Seite
+  │   │   │   └── +page.server.js     # Bucket-List CRUD-Operationen
+  │   │   └── karte/
+  │   │       ├── +page.svelte        # Leaflet-Karte (nur client-seitig)
+  │   │       └── +page.server.js     # Aggregation visits + bucket_list mit Koordinaten
   │   └── app.html
   ├── doku/
   │   ├── Mockups/
@@ -226,26 +233,90 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
 
 - **Daten & Schnittstellen:**
 
-  Die Daten werden in einer MongoDB Atlas Datenbank (Cluster: `cluster0.v3hjcar.mongodb.net`, Datenbank: `stadiontracker`) gespeichert. Aktuell gibt es eine Collection:
+  Die Daten werden in einer MongoDB Atlas Datenbank (Cluster: `cluster0.v3hjcar.mongodb.net`, Datenbank: `stadiontracker`) gespeichert. Die Datenbank ist in drei Collections aufgeteilt, wobei `visits` und `bucket_list` über eine Fremdschlüsselbeziehung (`stadiumId`) auf die `stadiums`-Collection referenzieren (normalisiertes Schema):
 
-  - **visits** — Enthält alle Stadionbesuche mit folgender Dokumentstruktur:
+  **Datenbankschema (Entity-Relationship-Diagramm):**
+
+  ```mermaid
+  erDiagram
+      STADIUMS {
+          ObjectId _id PK
+          string Name
+          string Town
+          string Nation
+          number Capacity
+          number Latitude
+          number Longitude
+      }
+
+      VISITS {
+          ObjectId _id PK
+          ObjectId stadiumId FK
+          string homeTeam
+          string awayTeam
+          number scoreHome
+          number scoreAway
+          string result
+          boolean isHome
+          string date
+          string notes
+          date createdAt
+      }
+
+      BUCKET_LIST {
+          ObjectId _id PK
+          ObjectId stadiumId FK
+          date addedAt
+      }
+
+      STADIUMS ||--o{ VISITS : "has"
+      STADIUMS ||--o{ BUCKET_LIST : "is on"
+  ```
+
+  **Collections im Detail:**
+
+  - **stadiums** — Referenz-Collection für alle Stadien. Wird beim Erfassen eines Besuchs angelegt oder wiederverwendet, falls das Stadion bereits existiert.
     ```json
     {
       "_id": "ObjectId (automatisch generiert)",
-      "stadium": "Signal Iduna Park",
-      "city": "Dortmund",
-      "country": "Deutschland",
+      "Name": "Signal Iduna Park",
+      "Town": "Dortmund",
+      "Nation": "Deutschland",
+      "Capacity": 81365,
+      "Latitude": 51.4926,
+      "Longitude": 7.4519
+    }
+    ```
+
+  - **visits** — Enthält alle Stadionbesuche. Referenziert das zugehörige Stadion via `stadiumId`.
+    ```json
+    {
+      "_id": "ObjectId (automatisch generiert)",
+      "stadiumId": "ObjectId (Referenz auf stadiums._id)",
       "homeTeam": "Borussia Dortmund",
       "awayTeam": "FC Bayern München",
       "scoreHome": 3,
       "scoreAway": 1,
+      "result": "W",
+      "isHome": false,
       "date": "2024-09-14",
       "notes": "Gelbe Wand war unglaublich laut!",
-      "createdAt": "2024-09-14T20:00:00Z"
+      "createdAt": "2024-09-14T20:00:00.000Z"
     }
     ```
 
-  Die Daten werden über SvelteKit Form Actions (Server-side) verwaltet. Die `+page.server.js`-Dateien enthalten `load()`-Funktionen zum Laden der Daten und `actions` für Create- und Delete-Operationen. Das Dashboard aggregiert die Daten aus der visits-Collection serverseitig zur Berechnung der Statistiken (unique Stadien, Länder, Win-Rate, W/D/L-Bilanz, Länder-Breakdown).
+  - **bucket_list** — Wunsch-Stadien des Nutzers. Referenziert das gewünschte Stadion via `stadiumId`.
+    ```json
+    {
+      "_id": "ObjectId (automatisch generiert)",
+      "stadiumId": "ObjectId (Referenz auf stadiums._id)",
+      "addedAt": "2024-09-14T20:00:00.000Z"
+    }
+    ```
+
+  **Begründung der Normalisierung:** Stadion-Metadaten (Name, Ort, Koordinaten, Kapazität) werden einmalig in der `stadiums`-Collection gespeichert. `visits` und `bucket_list` referenzieren das Stadion nur via `stadiumId`. Dies vermeidet Datenduplikation und ermöglicht serverseitige Aggregationen (z. B. alle Besuche eines Stadions, Marker für die Karte) per MongoDB `$lookup`.
+
+  Die Daten werden über SvelteKit Form Actions (Server-side) verwaltet. Die `+page.server.js`-Dateien enthalten `load()`-Funktionen zum Laden der Daten und `actions` für Create- und Delete-Operationen. Das Dashboard aggregiert die Daten serverseitig zur Berechnung der Statistiken (unique Stadien, Länder, Win-Rate, W/D/L-Bilanz, Länder-Breakdown).
 
   Der MongoDB Connection String wird als Environment Variable (`MONGODB_URI`) gespeichert — lokal in der `.env`-Datei (nicht im Repository) und auf Netlify als Environment Variable konfiguriert. Die Datenbankverbindung wird in `src/lib/db.js` zentral hergestellt und in allen Server-Routen importiert.
 
@@ -257,6 +328,8 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
   - **Inline-Formulare statt separate Seiten:** Die Formulare zur Erfassung von Besuchen öffnen sich inline per Toggle innerhalb des jeweiligen Tabs. Dies vermeidet Seitenwechsel und hält den Flow kompakt — besonders wichtig auf Mobile.
   - **Keine Authentifizierung:** Da der Prototyp für einen einzelnen Nutzer konzipiert ist, wurde bewusst auf Login/Registrierung verzichtet. Dies reduziert die Komplexität erheblich und ermöglicht die Fokussierung auf die Kernfunktionalität.
   - **Network Access 0.0.0.0/0:** Für MongoDB Atlas wurde der Zugriff von allen IP-Adressen erlaubt, da Netlify keine feste IP hat. Für einen Prototyp ist dies akzeptabel.
+  - **Leaflet nur client-seitig laden:** Leaflet setzt ein DOM-Objekt voraus und ist nicht SSR-kompatibel. Die Bibliothek (inkl. CSS) wird deshalb ausschliesslich über einen dynamischen Import innerhalb von `onMount` geladen (`const L = (await import('leaflet')).default`). Dies verhindert Server-Fehler beim Build und stellt sicher, dass Leaflet erst initialisiert wird, wenn das `<div>`-Element im DOM vorhanden ist. `onMount` ist in Svelte 5 für externe Bibliotheken weiterhin erlaubt.
+  - **MongoDB-Aggregation für die Karte:** Die Karten-Seite aggregiert die `visits`-Collection mit `$group` nach `stadiumId`, um doppelte Besuche desselben Stadions zusammenzuführen und den `visitCount` zu berechnen. Anschliessend werden die Stadionkoordinaten (`Latitude`, `Longitude`) via `$lookup` auf die `stadiums`-Collection aufgelöst. Die `bucket_list`-Collection wird parallel mit `Promise.all` abgefragt, um die Ladezeit zu minimieren.
 
 ### 3.5 Validate
 
@@ -309,6 +382,14 @@ _Dieses Kapitel wird nach Abschluss der Prototype- und Validate-Phase ergänzt, 
   - **Verwendung:** `src/routes/+page.svelte` (Dashboard) und `src/routes/besuche/+page.svelte` (Besuche-Seite)
 - **Referenz:** Beschreibung in Kap. 3.4.2 (Struktur & Komponenten)
 - **Aus Evaluation abgeleitet?:** Nein, Entscheidung aus Code-Qualitätsgründen.
+
+### 4.3 Interaktive Stadion-Karte (Leaflet)
+- **Beschreibung & Nutzen:** Die Karte-Seite (`/karte`) visualisiert alle besuchten und auf der Bucket List gespeicherten Stadien auf einer interaktiven Europakarte. Farbcodierte CircleMarker (Grün = besucht, Orange = Bucket List) geben sofort Orientierung. Ein Klick auf einen Marker öffnet einen Tooltip mit Stadionname und Ort; ein erneuter Klick schliesst ihn. Unterhalb der Karte listet eine scrollbare Stadionliste alle Einträge beider Kategorien auf — ein Klick auf einen Listeneintrag lässt die Karte zum gewählten Stadion fliegen (`flyTo`) und öffnet den Tooltip automatisch. Mehrfach besuchte Stadien werden auf der Karte als ein Marker angezeigt; in der Liste erscheint ein Badge mit der Besuchsanzahl (z. B. `3×`).
+- **Wo umgesetzt:**
+  - **Backend:** `src/routes/karte/+page.server.js` — Zwei parallele MongoDB-Aggregationen (`Promise.all`): `visits` wird via `$group` nach `stadiumId` zusammengeführt (visitCount) und via `$lookup` mit den Stadionkoordinaten angereichert; `bucket_list` wird direkt per `$lookup` auf `stadiums` aufgelöst. Stadien ohne Koordinaten werden vom Server zurückgegeben, aber clientseitig ohne Marker dargestellt.
+  - **Frontend:** `src/routes/karte/+page.svelte` — Leaflet wird per dynamischem Import in `onMount` geladen (SSR-sicher). Die Karte initialisiert sich auf Europa (center `[48, 10]`, zoom 5) mit OpenStreetMap-Tiles. Marker-Referenzen werden in einem `markers`-Objekt nach ID gespeichert, damit Listenklicks direkt den richtigen Marker ansprechen können. Reaktiver State (`$state`) steuert die Hervorhebung der selektierten Listenzeile.
+- **Referenz:** Kap. 3.4.2, Besondere Entscheidungen (Leaflet nur client-seitig; MongoDB-Aggregation für die Karte)
+- **Aus Evaluation abgeleitet?:** Nein, war von Beginn an als Kern-Feature geplant (vgl. Kap. 2, Lösungsidee).
 
 ## 5. Projektorganisation [Optional]
 
@@ -377,6 +458,8 @@ Das grösste Risiko beim KI-Einsatz ist die Übernahme von generierten Inhalten 
 
 - **Quellen & Referenzen:**
   - Polarsteps (https://www.polarsteps.com) — Referenz-App für Reise-Tracking-Konzept
+  - Leaflet.js (https://leafletjs.com) — Open-Source-Kartenbibliothek für die interaktive Karte
+  - OpenStreetMap (https://www.openstreetmap.org) — Kartenkacheln (Tile Layer) für die Leaflet-Karte
   - DM Sans Font (Google Fonts) — Hauptschrift
   - JetBrains Mono Font (Google Fonts) — Monospace-Schrift für Badges
   - Stadium Tracker Logo — Eigenentwicklung (Stadion von oben + Location-Pin)

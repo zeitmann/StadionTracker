@@ -1,160 +1,261 @@
 <script>
-  import { enhance } from '$app/forms';
-  import StadiumCard from '$lib/components/StadiumCard.svelte';
+    import { enhance } from '$app/forms';
+    import StadiumCard from '$lib/components/StadiumCard.svelte';
 
-  let { data } = $props();
-  let showForm = $state(false);
+    let { data, form } = $props();
+    let showForm = $state(false);
+
+    $effect(() => {
+        if (form?.added) {
+            showForm = false;
+        }
+    });
 </script>
 
+<svelte:head>
+    <title>Bucket List — Stadium Tracker</title>
+</svelte:head>
+
 <div class="page">
-  <div class="header">
-    <h1>Bucket List</h1>
-    <button class="btn-orange" onclick={() => showForm = !showForm}>
-      {showForm ? '✕ Schliessen' : '+ Stadion hinzufügen'}
-    </button>
-  </div>
-
-  {#if showForm}
-    <div class="form-card">
-      <form method="POST" action="?/add" use:enhance={() => {
-        return ({ update }) => { update(); showForm = false; };
-      }}>
-        <div class="form-group">
-          <label for="name">Stadionname</label>
-          <input id="name" name="name" type="text" placeholder="z.B. Wembley Stadium" required />
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="city">Stadt</label>
-            <input id="city" name="city" type="text" placeholder="London" required />
-          </div>
-          <div class="form-group">
-            <label for="country">Land</label>
-            <input id="country" name="country" type="text" placeholder="England" required />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="capacity">Kapazität (optional)</label>
-          <input id="capacity" name="capacity" type="number" placeholder="90'000" />
-        </div>
-        <button type="submit" class="btn-orange btn-full">Zur Bucket List hinzufügen</button>
-      </form>
+    <div class="header">
+        <h1>Bucket List</h1>
+        <button class="btn-primary" onclick={() => showForm = !showForm}>
+            {showForm ? '✕ Schliessen' : '+ Stadion hinzufügen'}
+        </button>
     </div>
-  {/if}
 
-  <p class="counter">{data.stadien.length} {data.stadien.length === 1 ? 'Stadion' : 'Stadien'} auf deiner Liste</p>
+    {#if form?.added}
+        <div class="alert alert-success">
+            ✅ Stadion zur Bucket List hinzugefügt!
+        </div>
+    {/if}
+    {#if form?.visited}
+        <div class="alert alert-success">
+            ✅ Stadion als besucht markiert!
+        </div>
+    {/if}
+    {#if form?.removed}
+        <div class="alert alert-success">
+            🗑️ Stadion wurde entfernt.
+        </div>
+    {/if}
 
-  {#if data.stadien.length === 0}
-    <div class="empty-state">
-      <p>Noch keine Stadien auf der Bucket List.<br />Füge dein erstes Wunsch-Stadion hinzu!</p>
-    </div>
-  {:else}
+    {#if showForm}
+        <div class="card form-card">
+            <h2>Stadion hinzufügen</h2>
+
+            {#if form?.error}
+                <div class="alert alert-error">
+                    ⚠️ {form.error}
+                </div>
+            {/if}
+
+            <form method="POST" action="?/add" use:enhance={() => {
+                return ({ update }) => { update(); };
+            }}>
+                <div class="form-group">
+                    <label for="name">Stadionname *</label>
+                    <input id="name" name="name" type="text" placeholder="z.B. Wembley Stadium" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">Stadt *</label>
+                        <input id="city" name="city" type="text" placeholder="z.B. London" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Land *</label>
+                        <input id="country" name="country" type="text" placeholder="z.B. England" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="capacity">Kapazität (optional)</label>
+                    <input id="capacity" name="capacity" type="number" placeholder="90000" />
+                </div>
+                <button type="submit" class="btn-primary btn-full">Zur Bucket List hinzufügen</button>
+            </form>
+        </div>
+    {/if}
+
     <div class="stadium-list">
-      {#each data.stadien as stadion}
-        <StadiumCard {stadion} />
-      {/each}
+        {#if data.stadien.length === 0}
+            <div class="empty-state">
+                <span class="empty-icon">⭐</span>
+                <p>Noch keine Stadien auf der Bucket List.</p>
+                <p class="empty-hint">Klicke auf «+ Stadion hinzufügen» um dein erstes Wunsch-Stadion festzuhalten!</p>
+            </div>
+        {:else}
+            <p class="visit-count">{data.stadien.length} {data.stadien.length === 1 ? 'Stadion' : 'Stadien'} auf deiner Liste</p>
+            {#each data.stadien as stadion}
+                <StadiumCard {stadion} />
+            {/each}
+        {/if}
     </div>
-  {/if}
 </div>
 
 <style>
-  .page {
-    padding: 16px;
-    max-width: 720px;
-    margin: 0 auto;
-    padding-bottom: 80px;
-  }
+    .page {
+        padding: 16px 16px 80px 16px;
+        max-width: 720px;
+        margin: 0 auto;
+    }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
 
-  h1 {
-    font-size: 22px;
-    font-weight: 800;
-    color: #1A1A18;
-    letter-spacing: -0.02em;
-    margin: 0;
-  }
+    h1 {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 26px;
+        font-weight: 800;
+        color: #1A1A18;
+        letter-spacing: -0.03em;
+        margin: 0;
+    }
 
-  .counter {
-    font-size: 13px;
-    color: #6B6B63;
-    margin: 0 0 12px 0;
-  }
+    h2 {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #1A1A18;
+        margin: 0 0 16px 0;
+    }
 
-  .form-card {
-    background: #fff;
-    border: 1px solid #EDEDEB;
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 16px;
-  }
+    /* Button */
+    .btn-primary {
+        font-family: 'DM Sans', sans-serif;
+        background: #D85A30;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
+    .btn-primary:hover {
+        background: #c04e28;
+    }
 
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
+    .btn-full {
+        width: 100%;
+        padding: 14px;
+        font-size: 15px;
+        margin-top: 8px;
+    }
 
-  label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #1A1A18;
-  }
+    /* Alerts */
+    .alert {
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        margin-bottom: 16px;
+        font-family: 'DM Sans', sans-serif;
+    }
 
-  input {
-    padding: 10px 12px;
-    border: 1px solid #EDEDEB;
-    border-radius: 10px;
-    font-size: 14px;
-    color: #1A1A18;
-    background: #FAFAF8;
-    outline: none;
-    transition: border-color 0.2s;
-  }
+    .alert-success {
+        background: rgba(29, 158, 117, 0.08);
+        color: #1D9E75;
+        border: 1px solid rgba(29, 158, 117, 0.2);
+    }
 
-  input:focus {
-    border-color: #1D9E75;
-  }
+    .alert-error {
+        background: rgba(226, 75, 74, 0.08);
+        color: #E24B4A;
+        border: 1px solid rgba(226, 75, 74, 0.2);
+    }
 
-  .stadium-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+    /* Card & Form */
+    .card {
+        background: #FFFFFF;
+        border: 1px solid #EDEDEB;
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
 
-  .btn-orange {
-    background: #D85A30;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
+    .form-group {
+        margin-bottom: 14px;
+        flex: 1;
+    }
 
-  .btn-full {
-    width: 100%;
-    margin-top: 4px;
-  }
+    .form-group label {
+        display: block;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: #6B6B63;
+        margin-bottom: 6px;
+    }
 
-  .empty-state {
-    text-align: center;
-    padding: 40px 16px;
-    color: #A3A39B;
-    font-size: 14px;
-    line-height: 1.6;
-  }
+    .form-group input {
+        width: 100%;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        padding: 10px 12px;
+        border: 1px solid #EDEDEB;
+        border-radius: 10px;
+        background: #FAFAF8;
+        color: #1A1A18;
+        outline: none;
+        transition: border-color 0.2s;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+        border-color: #D85A30;
+    }
+
+    .form-group input::placeholder {
+        color: #A3A39B;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 12px;
+    }
+
+    /* List */
+    .visit-count {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        color: #6B6B63;
+        margin-bottom: 12px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 48px 16px;
+    }
+
+    .empty-icon {
+        font-size: 48px;
+    }
+
+    .empty-state p {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: #1A1A18;
+        margin: 12px 0 4px;
+    }
+
+    .empty-hint {
+        font-size: 14px !important;
+        font-weight: 400 !important;
+        color: #6B6B63 !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+    }
 </style>

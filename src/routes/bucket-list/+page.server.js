@@ -62,12 +62,18 @@ export const actions = {
                 return { success: false, error: 'Fehler beim Hinzufügen.' };
             }
         }
-        return { success: true };
+        return { added: true };
     },
 
     markVisited: async({ request }) => {
         const data = await request.formData();
         await db.collection('bucket_list').deleteOne({ _id: new ObjectId(data.get('id')) });
-        return { success: true };
+        return { visited: true };
+    },
+
+    remove: async({ request }) => {
+        const data = await request.formData();
+        await db.collection('bucket_list').deleteOne({ _id: new ObjectId(data.get('id')) });
+        return { removed: true };
     }
 };

@@ -1,87 +1,129 @@
 <script>
-  import { enhance } from '$app/forms';
-
-  let { stadion } = $props();
+    import { enhance } from '$app/forms';
+    let { stadion } = $props();
 </script>
 
-<div class="card">
-  <div class="card-top">
-    <div>
-      <h2 class="name">{stadion.name}</h2>
-      <p class="location">{stadion.city}, {stadion.country}</p>
-      {#if stadion.capacity}
-        <p class="capacity">Kapazität: {stadion.capacity.toLocaleString('de-CH')}</p>
-      {/if}
+<div class="visit-card">
+    <div class="visit-top">
+        <div class="visit-info">
+            <h3>{stadion.name}</h3>
+            <p class="visit-location">{stadion.city}, {stadion.country}</p>
+        </div>
+        <span class="badge">⭐ Bucket List</span>
     </div>
-    <span class="badge">⭐ Bucket List</span>
-  </div>
 
-  <form method="POST" action="?/markVisited" use:enhance>
-    <input type="hidden" name="id" value={stadion._id} />
-    <button type="submit" class="btn-visited">✓ Als besucht markieren</button>
-  </form>
+    {#if stadion.capacity}
+        <div class="visit-details">
+            <p class="visit-capacity">Kapazität: {stadion.capacity.toLocaleString('de-CH')}</p>
+        </div>
+    {/if}
+
+    <div class="action-buttons">
+        <form method="POST" action="?/markVisited" use:enhance class="action-form">
+            <input type="hidden" name="id" value={stadion._id} />
+            <button type="submit" class="btn-visited">✓ Als besucht markieren</button>
+        </form>
+        <form method="POST" action="?/remove" use:enhance class="action-form">
+            <input type="hidden" name="id" value={stadion._id} />
+            <button
+                type="submit"
+                class="btn-remove"
+                onclick={(e) => {
+                    e.preventDefault();
+                    if (confirm('Stadion von der Bucket List entfernen?')) {
+                        e.target.closest('form').submit();
+                    }
+                }}
+            >🗑️ Entfernen</button>
+        </form>
+    </div>
 </div>
 
 <style>
-  .card {
-    background: #fff;
-    border: 1px solid #EDEDEB;
-    border-radius: 14px;
-    padding: 14px;
-  }
+    .visit-card {
+        background: #ffffff;
+        border: 1px solid #ededeb;
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 10px;
+    }
 
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-    gap: 10px;
-  }
+    .visit-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
 
-  .name {
-    font-size: 16px;
-    font-weight: 700;
-    color: #1A1A18;
-    margin: 0 0 4px 0;
-  }
+    .visit-info h3 {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1a1a18;
+        margin: 0;
+    }
 
-  .location {
-    font-size: 13px;
-    color: #6B6B63;
-    margin: 0 0 4px 0;
-  }
+    .visit-location {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        color: #6b6b63;
+        margin: 2px 0 0 0;
+    }
 
-  .capacity {
-    font-size: 12px;
-    color: #A3A39B;
-    margin: 0;
-  }
+    .visit-details {
+        padding-top: 8px;
+        border-top: 1px solid #f5f5f3;
+        margin-bottom: 8px;
+    }
 
-  .badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: #D85A30;
-    background: rgba(216, 90, 48, 0.08);
-    border-radius: 6px;
-    padding: 4px 8px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
+    .visit-capacity {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 12px;
+        color: #a3a39b;
+        margin: 0;
+    }
 
-  .btn-visited {
-    width: 100%;
-    background: rgba(29, 158, 117, 0.08);
-    color: #1D9E75;
-    border: 1.5px solid #1D9E75;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
+    .badge {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: #D85A30;
+        background: rgba(216, 90, 48, 0.08);
+        border-radius: 6px;
+        padding: 4px 8px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
 
-  .btn-visited:hover {
-    background: rgba(29, 158, 117, 0.15);
-  }
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .action-form {
+        margin: 0;
+    }
+
+    .btn-visited {
+        font-family: 'DM Sans', sans-serif;
+        background: none;
+        border: none;
+        color: #1d9e75;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 4px 0;
+    }
+
+    .btn-remove {
+        font-family: 'DM Sans', sans-serif;
+        background: none;
+        border: none;
+        color: #e24b4a;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 4px 0;
+    }
 </style>
