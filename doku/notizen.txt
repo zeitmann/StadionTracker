@@ -1,0 +1,2 @@
+weitere option einbauen:
+        - Datensatz der Stadion für dropdownliste bei stadion hinzufügen. 

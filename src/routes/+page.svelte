@@ -1,9 +1,19 @@
 <script>
     import VisitCard from '$lib/components/VisitCard.svelte';
     import ResultBadge from '$lib/components/ResultBadge.svelte';
-    import { Building2, CalendarDays, Globe, Clock } from 'lucide-svelte';
+    import FavoriteClubCard from '$lib/components/FavoriteClubCard.svelte';
+    import { Building2, CalendarDays, Globe, Clock, Heart, Plus } from 'lucide-svelte';
+    import { enhance } from '$app/forms';
 
-    let { data } = $props();
+    let { data, form } = $props();
+
+    let showForm = $state(false);
+
+    $effect(() => {
+        if (form?.success) {
+            showForm = false;
+        }
+    });
 </script>
 
 <svelte:head>
@@ -31,6 +41,71 @@
             <span class="stat-label"><Globe size={18} strokeWidth={1.75} /> Länder</span>
             <span class="stat-value">{data.stats.uniqueCountries}</span>
         </div>
+    </div>
+
+    <!-- Lieblingsclubs -->
+    <div class="card">
+        <div class="card-title">
+            <Heart size={16} strokeWidth={1.75} color="#1D9E75" /> Lieblingsclubs
+            <button class="btn-add-club" onclick={() => showForm = !showForm}>
+                {#if showForm}
+                    × Schliessen
+                {:else}
+                    <Plus size={13} strokeWidth={2} /> Lieblingsclub
+                {/if}
+            </button>
+        </div>
+
+        {#if showForm}
+            <div class="form-card">
+                {#if form?.error}
+                    <div class="alert-error">{form.error}</div>
+                {/if}
+                <form method="POST" action="?/addFavoriteClub" use:enhance>
+                    <div class="form-group">
+                        <label for="club-name">Clubname *</label>
+                        <input
+                            type="text"
+                            id="club-name"
+                            name="name"
+                            placeholder="z.B. Borussia Dortmund"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="club-shortName">Kürzel *</label>
+                        <input
+                            type="text"
+                            id="club-shortName"
+                            name="shortName"
+                            placeholder="z.B. BVB"
+                            maxlength="5"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="club-stadiumId">Heimstadion *</label>
+                        <select id="club-stadiumId" name="stadiumId" required>
+                            <option value="" disabled selected>Stadion auswählen…</option>
+                            {#each data.stadiums as stadium}
+                                <option value={stadium._id}>{stadium.Name}, {stadium.Town}</option>
+                            {/each}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">Club hinzufügen</button>
+                </form>
+            </div>
+        {/if}
+
+        {#if data.favoriteClubs.length > 0}
+            <div class="club-grid">
+                {#each data.favoriteClubs as club}
+                    <FavoriteClubCard {club} />
+                {/each}
+            </div>
+        {:else}
+            <p class="empty-state">Noch keine Lieblingsclubs hinzugefügt.</p>
+        {/if}
     </div>
 
     <!-- Länder-Breakdown -->
@@ -146,6 +221,111 @@
         font-weight: 700;
         color: #1A1A18;
         margin-bottom: 14px;
+    }
+
+    .btn-add-club {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: auto;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1d9e75;
+        background: none;
+        border: 1px solid #1d9e75;
+        border-radius: 8px;
+        padding: 4px 10px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    .btn-add-club:hover {
+        background: rgba(29, 158, 117, 0.06);
+    }
+
+    /* Inline add-club form */
+    .form-card {
+        background: #ffffff;
+        border: 1px solid #ededeb;
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 12px;
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    .form-group label {
+        display: block;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        color: #6b6b63;
+        margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        padding: 8px 10px;
+        border: 1px solid #ededeb;
+        border-radius: 8px;
+        background: #fafaf8;
+        color: #1a1a18;
+        outline: none;
+        transition: border-color 0.2s;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #1d9e75;
+    }
+
+    .btn-submit {
+        width: 100%;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        background: #1d9e75;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+        background: #178a65;
+    }
+
+    .alert-error {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        color: #791f1f;
+        background: #fcebeb;
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+    }
+
+    /* Club Grid */
+    .club-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .empty-state {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        color: #a3a39b;
+        margin: 0;
     }
 
     /* Country List */

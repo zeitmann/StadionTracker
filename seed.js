@@ -28,6 +28,7 @@ async function seed() {
     const sidBern = await findStadium(db, 'Stade de Suisse', 'Bern');
     const sidVelodrome = await findStadium(db, 'Vélodrome', 'Marseille');
     const sidCampNou = await findStadium(db, 'Camp Nou', 'Barcelona');
+    const sidEuropapark = await findStadium(db, 'Europapark-Stadion', 'Freiburg');
     const sidWembley = await findStadium(db, 'Wembley Stadium', 'London');
     const sidSanSiro = await findStadium(db, 'Giuseppe Meazza', 'Milano');
     const sidBernabeu = await findStadium(db, 'Santiago Bernabéu', 'Madrid');
@@ -44,6 +45,15 @@ async function seed() {
         { stadiumId: sidVelodrome, homeTeam: 'Olympique Marseille', awayTeam: 'PSG', scoreHome: 0, scoreAway: 1, result: 'L', isHome: false, date: '2024-10-22', notes: 'Le Classique im Vélodrome — unglaublich laut!', createdAt: new Date() },
         { stadiumId: sidLetzigrund, homeTeam: 'FC Zürich', awayTeam: 'Servette', scoreHome: 3, scoreAway: 1, result: 'W', isHome: true, date: '2024-07-20', notes: 'Saisonstart, gute Stimmung', createdAt: new Date() },
     ]);
+
+    await db.collection('visits').insertMany([
+        { stadiumId: sidEuropapark, homeTeam: 'SC Freiburg', awayTeam: 'Bayer Leverkusen', scoreHome: 2, scoreAway: 1, result: 'W', isHome: true, date: '2025-03-15', notes: 'Tolles Spiel im Europapark-Stadion!', createdAt: new Date() },
+        { stadiumId: sidEuropapark, homeTeam: 'SC Freiburg', awayTeam: 'VfB Stuttgart', scoreHome: 1, scoreAway: 1, result: 'D', isHome: true, date: '2025-01-18', notes: '', createdAt: new Date() },
+        { stadiumId: sidAllianz, homeTeam: 'Bayern München', awayTeam: 'SC Freiburg', scoreHome: 3, scoreAway: 0, result: 'L', isHome: false, date: '2024-11-09', notes: 'Auswärtsspiel in München', createdAt: new Date() },
+        { stadiumId: sidCampNou, homeTeam: 'FC Barcelona', awayTeam: 'Real Madrid', scoreHome: 3, scoreAway: 2, result: 'W', isHome: true, date: '2025-04-20', notes: 'El Clásico! Unvergesslich.', createdAt: new Date() },
+        { stadiumId: sidCampNou, homeTeam: 'FC Barcelona', awayTeam: 'Atletico Madrid', scoreHome: 2, scoreAway: 2, result: 'D', isHome: true, date: '2025-02-08', notes: '', createdAt: new Date() },
+        { stadiumId: sidCampNou, homeTeam: 'Valencia CF', awayTeam: 'FC Barcelona', scoreHome: 1, scoreAway: 2, result: 'W', isHome: false, date: '2024-12-14', notes: 'Auswärtssieg in Valencia', createdAt: new Date() },
+    ]);
     console.log('✓ Visits eingefügt');
 
     // Bucket List einfügen
@@ -59,8 +69,23 @@ async function seed() {
     await db.collection('bucket_list').createIndex({ stadiumId: 1 }, { unique: true });
     console.log('✓ Unique Index erstellt');
 
+    await seedFavoriteClubs(db);
+
     await client.close();
     console.log('✅ Seed abgeschlossen!');
+}
+
+async function seedFavoriteClubs(db) {
+    await db.collection('favorite_clubs').drop().catch(() => {});
+
+    const sidEuropapark = await findStadium(db, 'Europapark-Stadion', 'Freiburg');
+    const sidCampNou = await findStadium(db, 'Camp Nou', 'Barcelona');
+
+    await db.collection('favorite_clubs').insertMany([
+        { name: 'SC Freiburg', shortName: 'SCF', stadiumId: sidEuropapark, addedAt: new Date() },
+        { name: 'FC Barcelona', shortName: 'FCB', stadiumId: sidCampNou, addedAt: new Date() },
+    ]);
+    console.log('✓ Favorite Clubs eingefügt');
 }
 
 seed().catch(console.error);
