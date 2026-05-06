@@ -38,7 +38,7 @@ Der **Stadium Tracker** ist eine responsive Webapplikation (Mobile-first), die F
 **HMW-Frage:** *Wie könnten wir Fussballfans helfen, ihre Stadionerlebnisse einfach festzuhalten und motivierend zu visualisieren, welche Stadien sie bereits besucht haben und welche noch auf ihrer Bucket List stehen?*
 
 - **Kernfunktionalität:**
-  - **Dashboard:** Gesamtübersicht mit Statistiken (Anzahl Stadien, Besuche, Länder, Win-Rate), W/D/L-Bilanz, Länder-Breakdown und den letzten Besuchen.
+  - **Dashboard:** Gesamtübersicht mit Statistiken (Anzahl Stadien, Besuche, Länder), Länder-Breakdown, Lieblingsclubs-Sektion mit W/D/L-Bilanz und Win-Rate pro Club sowie den letzten Besuchen.
   - **Besuche erfassen & verwalten:** Formular zur Erfassung neuer Stadionbesuche mit Stadion, Stadt, Land, Datum, Teams, Ergebnis und optionalen Notizen. Chronologische Liste aller bisherigen Besuche mit Löschen-Funktion.
   - **Bucket List:** _(geplant)_ Wunsch-Stadien mit Name, Stadt, Land und Kapazität hinzufügen. Stadien können als "besucht" markiert werden und wechseln dann in die Besuchshistorie.
   - **Interaktive Karte:** Europakarte mit farbcodierten CircleMarkern — Grün für besuchte Stadien, Orange für Bucket-List-Stadien. Klick auf einen Marker öffnet einen Tooltip mit Stadionname und Ort. Eine scrollbare Stadionliste unterhalb der Karte erlaubt Navigation per Klick (flyTo auf den Marker). Mehrfach besuchte Stadien werden als ein Marker mit Besuchszähler dargestellt.
@@ -50,8 +50,10 @@ Der **Stadium Tracker** ist eine responsive Webapplikation (Mobile-first), die F
 
 - **Abgrenzung [Optional]:**
   - Kein Social/Sharing-Feature (Login, öffentliche Profile, Besuche anderer User finden) — bewusst verworfen wegen Scope und Zeitrahmen des Prototyps (siehe Sketch-Phase, Variante D).
+  - Keine globale Win-Rate über alle Spiele — bewusst entfernt, da eine Win-Rate ohne Teamkontext inhaltlich sinnlos ist (ein "W" bedeutet je nach Fan-Zugehörigkeit etwas anderes). Die Win-Rate wird stattdessen pro Lieblingsclub angezeigt (siehe Erweiterung 4.4).
+  - Kein globales W/D/L-Badge auf einzelnen Besuchen — entfernt, da W/D/L nur im Kontext eines Lieblingsclubs aussagekräftig ist. Die Badges bleiben als Komponente erhalten und werden pro Club in der `FavoriteClubCard` verwendet.
   - Keine Stadion-Detailseite mit Fotos und Bewertungen.
-  - Keine Filter- und Suchfunktion für Besuche (z. B. nach Land, Ergebnis, Zeitraum).
+  - Keine Filter- und Suchfunktion für Besuche (z. B. nach Land, Ergebnis, Zeitraum) — als Erweiterung geplant.
   - Keine Statistik-Charts (Balkendiagramme etc.).
   - Keine Hotel/Restaurant-Tipps pro Besuch.
 
@@ -123,8 +125,8 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
 
   **User Journey Map — "Luca erfasst seinen Stadionbesuch":**
   1. Luca öffnet die Stadium Tracker App auf seinem Smartphone.
-  2. Das Dashboard zeigt ihm seine aktuellen Statistiken: 6 Stadien besucht, 8 Besuche, 3 Länder, 50% Win-Rate.
-  3. Er sieht die W/D/L-Bilanz und die letzten Besuche.
+  2. Das Dashboard zeigt ihm seine aktuellen Statistiken: 6 Stadien besucht, 8 Besuche, 3 Länder sowie die W/D/L-Bilanz seiner Lieblingsclubs.
+  3. Er sieht die Lieblingsclubs-Sektion mit Win-Rate pro Club und die letzten Besuche.
   4. Luca wechselt zum Tab "Besuche" und tippt auf "+ Neuer Besuch".
   5. Er gibt das Stadion (Letzigrund), Stadt (Zürich), Land (Schweiz), Datum, Teams (FC Zürich vs. FC Basel), Ergebnis (2:1) und eine Notiz ein.
   6. Klick auf "Besuch speichern" — eine Erfolgsmeldung erscheint und der neue Besuch erscheint oben in der Liste.
@@ -143,7 +145,7 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
 
   | Tab | Funktion | Inhalt |
   |---|---|---|
-  | Dashboard | Übersicht & Motivation | Stats (Stadien, Besuche, Länder, Win-Rate), W/D/L-Bilanz, Länder-Breakdown, letzte Besuche |
+  | Dashboard | Übersicht & Motivation | Stats (Stadien, Besuche, Länder), Lieblingsclubs mit W/D/L-Bilanz und Win-Rate pro Club, Länder-Breakdown, letzte Besuche |
   | Besuche | Erfassen & Browsen | Formular zur Erfassung neuer Besuche, chronologische Liste aller Besuche mit W/D/L-Badges |
   | Bucket List | Wunschliste verwalten | _(geplant)_ Stadien zur Bucket List hinzufügen, als besucht markieren |
   | Karte | Geographische Visualisierung | Interaktive Leaflet-Karte, CircleMarker (Grün = besucht, Orange = Bucket List), Tooltip bei Marker-Klick, Stadionliste mit flyTo-Navigation, Legende |
@@ -227,9 +229,11 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
 
   **Wiederverwendbare Komponenten:**
 
-  - **`VisitCard.svelte`** — Die zentrale wiederverwendbare Komponente des Projekts. Sie zeigt einen einzelnen Stadionbesuch mit W/D/L-Badge, Stadionname, Ort, Spielergebnis, Datum, optionalen Notizen und einem Löschen-Button. Die Komponente akzeptiert drei Props: `visit` (Besuchsdaten), `showDelete` (steuert den Löschen-Button) und `compact` (kompakte Variante für das Dashboard). Die Entscheidung, die VisitCard als Komponente auszulagern, wurde getroffen, weil der gleiche Besuchseintrag an zwei Stellen verwendet wird — auf der Besuche-Seite als vollständige Karte mit Löschen-Funktion und auf dem Dashboard als kompakte Vorschau der letzten Besuche. Ohne Komponente wäre der Code für Badge-Logik, Datumsformatierung und Styling doppelt vorhanden gewesen. Durch die Props `showDelete` und `compact` kann dieselbe Komponente flexibel in beiden Kontexten eingesetzt werden.
+  - **`VisitCard.svelte`** — Die zentrale wiederverwendbare Komponente des Projekts. Sie zeigt einen einzelnen Stadionbesuch mit Stadionname, Ort, Spielergebnis, Datum, optionalen Notizen, Bearbeiten- und Löschen-Button. Die Komponente akzeptiert drei Props: `visit` (Besuchsdaten), `showDelete` (steuert den Löschen-Button) und `compact` (kompakte Variante für das Dashboard). **Designentscheidung:** Das W/D/L-Badge wurde bewusst aus der `VisitCard` entfernt, da ein Ergebnis-Badge ohne Teamkontext keine Aussagekraft hat — ein "W" bedeutet je nach Fan-Zugehörigkeit etwas anderes. Der Badge-Code bleibt in der Komponente erhalten (als `ResultBadge.svelte`), wird aber nur noch in der `FavoriteClubCard` verwendet.
 
-  _(Weitere Komponenten wie TabBar, StatCard, StadiumCard werden in der nächsten Entwicklungsphase als eigenständige Komponenten ausgelagert.)_
+  - **`FavoriteClubCard.svelte`** — Zeigt einen einzelnen Lieblingsclub mit W/D/L-Bilanz und Win-Rate-Balken. Props: `club` (Objekt mit `name`, `shortName`, `stadiumName`, `totalGames`, `wins`, `draws`, `losses`, `winRate`). Die Win-Rate ist hier sinnvoll, weil sie sich auf einen konkreten Club bezieht — alle Spiele, bei denen dieser Club mitgespielt hat, werden gezählt. Die Farbe des Prozentwerts ist dynamisch: grün bei ≥50%, rot bei <50%.
+
+  _(Weitere Komponenten wie TabBar, StatCard, StadiumCard wurden ebenfalls als eigenständige Komponenten ausgelagert.)_
 
 - **Daten & Schnittstellen:**
 
@@ -269,8 +273,17 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
           date addedAt
       }
 
+      FAVORITE_CLUBS {
+          ObjectId _id PK
+          string name
+          string shortName
+          ObjectId stadiumId FK
+          date addedAt
+      }
+
       STADIUMS ||--o{ VISITS : "has"
       STADIUMS ||--o{ BUCKET_LIST : "is on"
+      STADIUMS ||--o| FAVORITE_CLUBS : "home of"
   ```
 
   **Collections im Detail:**
@@ -314,9 +327,20 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
     }
     ```
 
+  - **favorite_clubs** — Lieblingsclubs des Nutzers. Referenziert das Heimstadion des Clubs via `stadiumId`. Wird für die Win-Rate-Berechnung pro Club verwendet.
+    ```json
+    {
+      "_id": "ObjectId (automatisch generiert)",
+      "name": "SC Freiburg",
+      "shortName": "SCF",
+      "stadiumId": "ObjectId (Referenz auf stadiums._id)",
+      "addedAt": "2026-05-07T00:00:00.000Z"
+    }
+    ```
+
   **Begründung der Normalisierung:** Stadion-Metadaten (Name, Ort, Koordinaten, Kapazität) werden einmalig in der `stadiums`-Collection gespeichert. `visits` und `bucket_list` referenzieren das Stadion nur via `stadiumId`. Dies vermeidet Datenduplikation und ermöglicht serverseitige Aggregationen (z. B. alle Besuche eines Stadions, Marker für die Karte) per MongoDB `$lookup`.
 
-  Die Daten werden über SvelteKit Form Actions (Server-side) verwaltet. Die `+page.server.js`-Dateien enthalten `load()`-Funktionen zum Laden der Daten und `actions` für Create- und Delete-Operationen. Das Dashboard aggregiert die Daten serverseitig zur Berechnung der Statistiken (unique Stadien, Länder, Win-Rate, W/D/L-Bilanz, Länder-Breakdown).
+  Die Daten werden über SvelteKit Form Actions (Server-side) verwaltet. Die `+page.server.js`-Dateien enthalten `load()`-Funktionen zum Laden der Daten und `actions` für Create- und Delete-Operationen. Das Dashboard aggregiert die Daten serverseitig zur Berechnung der Statistiken (unique Stadien, Länder, Länder-Breakdown, letzte Besuche) sowie für die Lieblingsclubs-Sektion: Per `$lookup` auf die `visits`-Collection wird pro Club die W/D/L-Bilanz und Win-Rate berechnet (case-insensitiver Vergleich auf `homeTeam`/`awayTeam`).
 
   Der MongoDB Connection String wird als Environment Variable (`MONGODB_URI`) gespeichert — lokal in der `.env`-Datei (nicht im Repository) und auf Netlify als Environment Variable konfiguriert. Die Datenbankverbindung wird in `src/lib/db.js` zentral hergestellt und in allen Server-Routen importiert.
 
@@ -352,7 +376,7 @@ _Die Evaluation findet in Woche 14 (18.–23. Mai 2026) statt. Bis zum 19.05.202
   - **Aufgabe 1:** "Du warst gestern im Letzigrund beim Spiel FC Zürich gegen FC Basel. Das Ergebnis war 2:1 für FCZ. Erfasse diesen Besuch in der App."
   - **Aufgabe 2:** "Finde heraus, in wie vielen verschiedenen Ländern du schon Stadien besucht hast."
   - **Aufgabe 3:** "Lösche einen bestehenden Besuch aus der Liste."
-  - **Aufgabe 4:** "Schaue dir auf dem Dashboard an, wie deine Gesamtbilanz (Siege/Unentschieden/Niederlagen) aussieht."
+  - **Aufgabe 4:** "Schaue dir auf dem Dashboard an, wie die Bilanz deines Lieblingsclubs aussieht (Siege/Unentschieden/Niederlagen und Win-Rate)."
 
 - **Kennzahlen & Beobachtungen:** _[nach Durchführung ausfüllen]_
 
@@ -391,14 +415,28 @@ _Dieses Kapitel wird nach Abschluss der Prototype- und Validate-Phase ergänzt, 
 - **Referenz:** Kap. 3.4.2, Besondere Entscheidungen (Leaflet nur client-seitig; MongoDB-Aggregation für die Karte)
 - **Aus Evaluation abgeleitet?:** Nein, war von Beginn an als Kern-Feature geplant (vgl. Kap. 2, Lösungsidee).
 
+### 4.4 Lieblingsclubs mit Win-Rate
+- **Beschreibung & Nutzen:** Eine neue Sektion auf dem Dashboard zeigt die Lieblingsclubs des Nutzers mit ihrer W/D/L-Bilanz und Win-Rate. Pro Club wird angezeigt: Clubname, Kürzel, Heimstadion, Anzahl Spiele, W/D/L-Badges und ein farbcodierter Win-Rate-Balken (grün ≥50%, rot <50%). Neue Clubs können über ein togglebares Inline-Formular direkt auf dem Dashboard hinzugefügt werden.
+- **Designentscheidungen:**
+  - **Win-Rate entfernt aus globalem Dashboard** — Eine globale Win-Rate über alle Besuche wurde bewusst entfernt, da sie ohne Teamkontext keine Aussagekraft hat. Ein "W" bei einem Spiel bedeutet je nach Fan-Zugehörigkeit ein Sieg oder eine Niederlage. Die Win-Rate wird stattdessen pro Lieblingsclub berechnet und angezeigt.
+  - **W/D/L-Badge entfernt aus VisitCard** — Das Badge wurde aus der Besuchskarte entfernt aus demselben Grund: Ohne Wissen, welchem Team der Fan zugehört, ist das Ergebnis nicht interpretierbar. Die Badge-Komponente (`ResultBadge.svelte`) bleibt erhalten und wird in der `FavoriteClubCard` verwendet.
+  - **Inline-Formular statt separate Seite** — Konsistent mit dem Rest der App öffnet sich das Formular per Toggle inline, ohne Seitenwechsel.
+- **Wo umgesetzt:**
+  - **Datenbank:** Neue Collection `favorite_clubs` (Felder: `name`, `shortName`, `stadiumId` FK, `addedAt`)
+  - **Backend:** `src/routes/+page.server.js` — MongoDB-Aggregation auf `favorite_clubs` mit `$lookup` auf `visits` (case-insensitiver Vergleich auf `homeTeam`/`awayTeam`), `$addFields` für W/D/L-Zählung und Win-Rate-Berechnung, `$lookup` auf `stadiums` für Stadionname. Neue Form Action `addFavoriteClub`.
+  - **Komponente:** `src/lib/components/FavoriteClubCard.svelte` — Props: `club` (name, shortName, stadiumName, totalGames, wins, draws, losses, winRate)
+  - **Frontend:** `src/routes/+page.svelte` — Lieblingsclubs-Sektion mit 2-spaltigem Grid, togglebarem Inline-Formular (Clubname, Kürzel, Heimstadion-Dropdown)
+- **Aus Evaluation abgeleitet?:** Nein, Entscheidung aus inhaltlichen Qualitätsgründen (Win-Rate ohne Teamkontext sinnlos).
+
 ## 5. Projektorganisation [Optional]
 
 - **Repository & Struktur:** Das Projekt wird in einem GitHub-Repository verwaltet. Die Dokumentation (README.md) liegt im Root-Verzeichnis. Der Sourcecode befindet sich im `src/`-Ordner, unterteilt in `lib/` (wiederverwendbare Module und Komponenten) und `routes/` (Seiten und Server-Logik). Das Repository ist für die Dozierenden zugänglich (Usernamen: mmeisterhans und bkuehnis).
   - _URL: [GitHub-Repository-URL hier einfügen]_
 
 - **Commit-Praxis:** Sprechende Commit-Messages in deutscher Sprache, die beschreiben, was geändert wurde. Beispiele bisheriger Commits:
+  - `feat: add favorite clubs section to dashboard with inline form`
+  - `fix: remove win-rate stat and W/D/L badge from UI display`
   - "Übung 11: Hauptworkflow Besuche (CRUD), MongoDB-Anbindung, Netlify-Deployment"
-  - "Passwort-Datei entfernt, gitignore aktualisiert"
   - "VisitCard-Komponente erstellt und in Besuche + Dashboard integriert"
 
 ## 6. KI-Deklaration
