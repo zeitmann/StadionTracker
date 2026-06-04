@@ -357,9 +357,7 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
 
 ### 3.5 Validate
 
-_Die Evaluation findet in Woche 14 (18.–23. Mai 2026) statt. Bis zum 19.05.2026 muss eine deployete Version 1 für das Testing bereitstehen._
-
-- **URL der getesteten Version:** _[URL hier einfügen nach Deployment]_
+- **URL der getesteten Version:** https://stadiontracker.netlify.app
 
 - **Ziele der Prüfung:**
   - Können Nutzende einen neuen Stadionbesuch innerhalb von 2 Minuten vollständig erfassen?
@@ -368,21 +366,171 @@ _Die Evaluation findet in Woche 14 (18.–23. Mai 2026) statt. Bis zum 19.05.202
   - Ist die Navigation zwischen Dashboard und Besuche intuitiv?
   - Welche Informationen fehlen oder sind überflüssig?
 
-- **Vorgehen:** _[nach Durchführung ausfüllen]_
+- **Vorgehen:** Moderierter, szenario-basierter Usability Test, on-site. Die Testpersonen haben die App auf einem Laptop geöffnet und die vier Aufgaben nacheinander bearbeitet. Die Aufgabentexte wurden auf einem separaten Gerät angezeigt. Der Tester hat beobachtet und Notizen im Feedback Grid festgehalten, ohne einzugreifen. Nach allen Aufgaben folgte eine kurze Nachbesprechung mit offenen Fragen.
 
-- **Stichprobe:** _[nach Durchführung ausfüllen]_
+- **Stichprobe:**
 
-- **Aufgaben/Szenarien:**
-  - **Aufgabe 1:** "Du warst gestern im Letzigrund beim Spiel FC Zürich gegen FC Basel. Das Ergebnis war 2:1 für FCZ. Erfasse diesen Besuch in der App."
-  - **Aufgabe 2:** "Finde heraus, in wie vielen verschiedenen Ländern du schon Stadien besucht hast."
-  - **Aufgabe 3:** "Lösche einen bestehenden Besuch aus der Liste."
-  - **Aufgabe 4:** "Schaue dir auf dem Dashboard an, wie die Bilanz deines Lieblingsclubs aussieht (Siege/Unentschieden/Niederlagen und Win-Rate)."
+  | Code | Name | Alter | Beruf | Erfahrung mit ähnlichen Apps |
+  |------|------|-------|-------|------------------------------|
+  | TP-1 | Manuel Bächler | 24 | Automatiker, Bühler AG | Gelegentlich (z.B. Strava) |
+  | TP-2 | Thomas Behnke | 52 | Informatiker, Bühler AG | Kaum vorhanden |
 
-- **Kennzahlen & Beobachtungen:** _[nach Durchführung ausfüllen]_
+---
 
-- **Zusammenfassung der Resultate:** _[nach Durchführung ausfüllen]_
+#### Aufgaben / Szenarien
 
-- **Abgeleitete Verbesserungen:** _[nach Durchführung ausfüllen]_
+**Aufgabe 1 – Besuch erfassen**
+> Du warst gestern im Letzigrund beim Spiel FC Zürich gegen FC Basel. Das Ergebnis war 2:1 für FCZ. Erfasse diesen Besuch in der App.
+
+**Aufgabe 2 – Länderstatistik nachschlagen**
+> Finde heraus, in wie vielen verschiedenen Ländern du schon Stadien besucht hast.
+
+**Aufgabe 3 – Besuch löschen**
+> Lösche einen bestehenden Besuch aus der Liste.
+
+**Aufgabe 4 – Clubbilanz auf Dashboard lesen**
+> Schaue dir auf dem Dashboard an, wie die Bilanz deines Lieblingsclubs aussieht (Siege/Unentschieden/Niederlagen und Win-Rate).
+
+---
+
+#### Feedback Grid – TP-1 (Manuel Bächler)
+
+_Datum: 04.06.2026 · Version: stadiontracker.netlify.app_
+
+| + Was hat gut funktioniert / gefallen? | - Was hat nicht funktioniert / gefehlt / gestört? |
+|---|---|
+| Navigation zwischen den Tabs war sofort klar | Hat beim Stadion-Suchfeld lange gewartet, ob Vorschläge erscheinen |
+| Dashboard-Übersicht wirkt motivierend, Statistiken auf einen Blick | War nach dem Speichern unsicher, ob der Besuch wirklich gespeichert wurde |
+| Design wirkt aufgeräumt und übersichtlich | Lieblingsclub-Eingabe war auf Dashboard nicht sofort sichtbar |
+
+| * Welche neuen Ideen / Anforderungen sind aufgekommen? | ? Was war unklar? |
+|---|---|
+| Fotos zu einem Besuch hochladen | W/D/L-Badges — hat kurz überlegt, was die Abkürzungen bedeuten |
+| Liste aller Clubs, Lieblingsclub per Herz favorisieren | Was der Unterschied zwischen «als besucht markieren» und «Entfernen» ist |
+
+---
+
+#### Feedback Grid – TP-2 (Thomas Behnke)
+
+_Datum: 04.06.2026 · Version: stadiontracker.netlify.app_
+
+| + Was hat gut funktioniert / gefallen? | - Was hat nicht funktioniert / gefehlt / gestört? |
+|---|---|
+| Idee der App sofort verstanden — «sowas wie ein Tagebuch für Stadionbesuche» | Stadionsuche frustrierend: «Letzigrund» eingegeben, kein Hinweis ob Stadion gefunden wurde |
+| Tab-Icons als Orientierung hilfreich | Kein Hinweis, was nach dem Speichern passiert ist |
+| W/D/L-Bilanz auf Dashboard übersichtlich und direkt verständlich | Texte teilweise auf Deutsch, teilweise auf Englisch |
+
+| * Welche neuen Ideen / Anforderungen sind aufgekommen? | ? Was war unklar? |
+|---|---|
+| Filter nach Land oder Saison auf der Besuche-Seite | Wieso sind Besuche nicht klickbar, obwohl sie bei Hover selektiert werden? |
+| Export-Funktion (z.B. als PDF oder Liste) | |
+
+---
+
+#### Kennzahlen & Beobachtungen
+
+| Aufgabe | TP-1 Erfolg | TP-1 Auffälligkeiten | TP-2 Erfolg | TP-2 Auffälligkeiten |
+|---------|-------------|----------------------|-------------|----------------------|
+| 1 – Besuch erfassen | Erfolgreich | Hat einwandfrei funktioniert | Nicht erfolgreich | «Letzigrund» falsch geschrieben, kein Feedback — verunsicherter Nutzer |
+| 2 – Länderstatistik | Erfolgreich | Dashboard direkt geöffnet, Zahl sofort gefunden | Mit Umweg | Hat zuerst auf der Karte gesucht |
+| 3 – Besuch löschen | Mit Umweg | Lösch-Icon erst beim zweiten Durchgang entdeckt | Mit Umweg | Lösch-Button nicht sofort sichtbar |
+| 4 – Clubbilanz lesen | Nicht erfolgreich | W/U/N-Abkürzungen nicht verständlich | Erfolgreich | Sofort verstanden, positiv kommentiert |
+
+_Legende: Erfolgreich = ohne Probleme abgeschlossen · Mit Umweg = gezögert oder falsch geklickt · Nicht erfolgreich = Aufgabe nicht abgeschlossen_
+
+---
+
+#### Issues
+
+> Schweregrade: 0 = Kein Problem · 1 = Kosmetisch · 2 = Klein (tiefe Prio) · 3 = Gross (hohe Prio) · 4 = Katastrophe
+
+---
+
+**Issue 1**
+
+| Attribut | Beschreibung |
+|----------|-------------|
+| **Ort** | Besuche – Stadion-Suchfeld |
+| **Problem** | TP-2 konnte Aufgabe 1 nicht abschliessen, weil «Letzigrund» kein direktes Ergebnis lieferte und keine Rückmeldung erschien ob das Stadion gefunden wurde. Der korrekte Name im Datensatz lautet «Stadion Letzigrund». |
+| **Ursache** | Suchfeld erfordert exakte Übereinstimmung mit dem Stadionnamen im Datensatz. Kein Autocomplete, kein Dropdown mit Vorschlägen, keine Fehlermeldung bei null Treffern. |
+| **Empfehlung** | Autocomplete-Dropdown beim Tippen einblenden; bei keinem Treffer Meldung «Kein Stadion gefunden – bitte Schreibweise prüfen» anzeigen. |
+| **Szenario** | Aufgabe 1 |
+| **Schweregrad** | 4 – Usability-Katastrophe (blockiert zentralen Workflow) |
+| **Testperson(en)** | TP-1, TP-2 |
+
+---
+
+**Issue 2**
+
+| Attribut | Beschreibung |
+|----------|-------------|
+| **Ort** | Besuche – Formular «Besuch eintragen» |
+| **Problem** | Nach dem Speichern erscheint keine Bestätigungsmeldung. Beide Testpersonen waren unsicher, ob der Eintrag gespeichert wurde. |
+| **Ursache** | Kein visuelles Feedback (Toast/Erfolgsmeldung) nach dem Absenden des Formulars implementiert. |
+| **Empfehlung** | Kurze Erfolgsmeldung («Besuch gespeichert») direkt nach dem Speichern anzeigen, z.B. als Toast-Notification. |
+| **Szenario** | Aufgabe 1 |
+| **Schweregrad** | 3 – Grosses Problem (hohe Priorität) |
+| **Testperson(en)** | TP-1, TP-2 |
+
+---
+
+**Issue 3**
+
+| Attribut | Beschreibung |
+|----------|-------------|
+| **Ort** | Dashboard – Lieblingsclubs |
+| **Problem** | Beide Testpersonen fanden keinen Lösch-Button um einen Lieblingsclub wieder zu entfernen. |
+| **Ursache** | Die Lösch-Funktion für Lieblingsclubs wurde nicht implementiert. |
+| **Empfehlung** | Entfernen-Button pro FavoriteClubCard ergänzen, analog zur Löschfunktion bei Besuchen. |
+| **Szenario** | Aufgabe 3 |
+| **Schweregrad** | 2 – Kleines Problem (tiefe Priorität) |
+| **Testperson(en)** | TP-1, TP-2 |
+
+---
+
+**Issue 4**
+
+| Attribut | Beschreibung |
+|----------|-------------|
+| **Ort** | Dashboard – W/U/N-Badges |
+| **Problem** | TP-1 konnte Aufgabe 4 nicht abschliessen, weil die Abkürzungen W/U/N nicht verständlich waren. |
+| **Ursache** | Die Badges verwenden deutsche Abkürzungen (U = Unentschieden, N = Niederlage) die im Fussballkontext unüblich sind. International gebräuchlich ist W/D/L (Win/Draw/Loss). |
+| **Empfehlung** | Badges in W/D/L umbenennen und einen Tooltip ergänzen: «W = Win, D = Draw, L = Loss». |
+| **Szenario** | Aufgabe 4 |
+| **Schweregrad** | 2 – Kleines Problem (tiefe Priorität) |
+| **Testperson(en)** | TP-1 |
+
+---
+
+**Issue 5**
+
+| Attribut | Beschreibung |
+|----------|-------------|
+| **Ort** | Allgemein – Sprache der Benutzeroberfläche |
+| **Problem** | TP-2 bemerkte, dass Texte in der App teilweise auf Deutsch und teilweise auf Englisch sind, was inkonsistent und unprofessionell wirkt. |
+| **Ursache** | Keine einheitliche Sprachentscheidung bei der Entwicklung getroffen (z.B. «Besuche» neben «Bucket List», «Entfernen» neben «Delete»). |
+| **Empfehlung** | Entweder konsequent Deutsch oder konsequent Englisch — bei einer Schweizer Fussball-Zielgruppe empfiehlt sich Deutsch. Ausnahmen wie etablierte Anglizismen (z.B. «W/D/L») sind vertretbar. |
+| **Szenario** | Allgemein |
+| **Schweregrad** | 1 – Kosmetisches Problem |
+| **Testperson(en)** | TP-2 |
+
+---
+
+#### Zusammenfassung der Resultate
+
+Das grundlegende Konzept von StadionTracker war für beide Testpersonen sofort verständlich — TP-2 beschrieb die App spontan als «Tagebuch für Stadionbesuche», was exakt der Absicht entspricht. Das Dashboard wurde als übersichtlich und motivierend wahrgenommen, die W/D/L-Bilanz wurde von TP-2 direkt positiv kommentiert. Kritischster Befund ist die Stadionsuche: TP-2 konnte Aufgabe 1 nicht abschliessen, weil keine Rückmeldung erschien ob das eingegebene Stadion gefunden wurde — der fehlende Autocomplete blockiert den zentralen Workflow der App. Ebenfalls fehlt nach dem Speichern jegliches Feedback, was beide Testpersonen verunsichert hat. Die W/U/N-Abkürzungen auf den Badges waren für TP-1 nicht verständlich, wodurch Aufgabe 4 nicht abgeschlossen werden konnte. Insgesamt bestätigen die Tests, dass das Konzept trägt — die Hauptprobleme liegen im Feedback-Verhalten der App und in der Konsistenz einzelner Bezeichnungen.
+
+---
+
+#### Abgeleitete Verbesserungen
+
+| Priorität | Verbesserung | Begründung | Umgesetzt? |
+|-----------|-------------|------------|------------|
+| Hoch | Autocomplete-Dropdown in Stadionsuche | Issue 1, Schweregrad 4 – blockiert zentralen Workflow, TP-2 konnte Aufgabe 1 nicht abschliessen | Nein – geplant |
+| Hoch | Erfolgsmeldung (Toast) nach Speichern eines Besuchs | Issue 2, Schweregrad 3 – beide TPs unsicher ob Eintrag gespeichert wurde | Nein – geplant |
+| Mittel | Lösch-Funktion für Lieblingsclubs implementieren | Issue 3, Schweregrad 2 – kein Entfernen-Button vorhanden, beide TPs betroffen | Nein – geplant |
+| Mittel | W/U/N-Badges in W/D/L umbenennen + Tooltip ergänzen | Issue 4, Schweregrad 2 – TP-1 konnte Aufgabe 4 nicht abschliessen | Nein – geplant |
+| Tief | Einheitliche Sprache (Deutsch) konsequent durchsetzen | Issue 5, Schweregrad 1 – Sprachmischung wirkt inkonsistent | Nein – abwägen |
 
 ## 4. Erweiterungen [Optional]
 
