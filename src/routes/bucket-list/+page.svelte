@@ -4,10 +4,28 @@
 
     let { data, form } = $props();
     let showForm = $state(false);
+    let toast = $state(null);
+    let toastTimeout = $state(null);
+
+    function showToast(message, type = 'success') {
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toast = { message, type };
+        toastTimeout = setTimeout(() => { toast = null; }, 3000);
+    }
 
     $effect(() => {
         if (form?.added) {
             showForm = false;
+            showToast('Stadion zur Bucket List hinzugefügt!');
+        }
+        if (form?.visited) {
+            showToast('Stadion als besucht markiert!');
+        }
+        if (form?.removed) {
+            showToast('Stadion wurde entfernt.');
+        }
+        if (form?.error) {
+            showToast(form.error, 'error');
         }
     });
 </script>
@@ -17,6 +35,12 @@
 </svelte:head>
 
 <div class="page">
+    {#if toast}
+        <div class="toast toast-{toast.type}">
+            {toast.message}
+        </div>
+    {/if}
+
     <div class="header">
         <h1>Bucket List</h1>
         <button class="btn-primary" onclick={() => showForm = !showForm}>
@@ -24,31 +48,9 @@
         </button>
     </div>
 
-    {#if form?.added}
-        <div class="alert alert-success">
-            ✅ Stadion zur Bucket List hinzugefügt!
-        </div>
-    {/if}
-    {#if form?.visited}
-        <div class="alert alert-success">
-            ✅ Stadion als besucht markiert!
-        </div>
-    {/if}
-    {#if form?.removed}
-        <div class="alert alert-success">
-            🗑️ Stadion wurde entfernt.
-        </div>
-    {/if}
-
     {#if showForm}
         <div class="card form-card">
             <h2>Stadion hinzufügen</h2>
-
-            {#if form?.error}
-                <div class="alert alert-error">
-                    ⚠️ {form.error}
-                </div>
-            {/if}
 
             <form method="POST" action="?/add" use:enhance={() => {
                 return ({ update }) => { update(); };
@@ -267,6 +269,31 @@
         font-size: 14px !important;
         font-weight: 400 !important;
         color: #6B6B63 !important;
+    }
+
+    /* Toast */
+    .toast {
+        position: fixed;
+        bottom: 88px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 200;
+        white-space: nowrap;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        animation: slideUp 0.2s ease;
+    }
+
+    .toast-success { background: #1D9E75; color: white; }
+    .toast-error { background: #E24B4A; color: white; }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+        to   { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
 
     /* Responsive */
