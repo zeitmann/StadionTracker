@@ -158,10 +158,10 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
 
   _Screenshots der fertigen Screens:_
 
-![Dashboard](doku/screenshots/dashboard_screenshot.png)
-![Besuche](doku/screenshots/besuche_screenshot.png)
-![Bucket List](doku/screenshots/bucketlist_screenshot.png)
-![Karte](doku/screenshots/karte_screenshot.png)
+![Dashboard](doku/screenshots/Dashboard_screenshot.png)
+![Besuche](doku/screenshots/Besuche_screenshot.png)
+![Bucket List](doku/screenshots/Bucketlist_screenshot.png)
+![Karte](doku/screenshots/Karte_screenshot.png)
 
 - **Designentscheidungen:**
 
@@ -531,15 +531,13 @@ Das grundlegende Konzept von StadionTracker war für beide Testpersonen sofort v
 
 | Priorität | Verbesserung | Begründung | Umgesetzt? |
 |-----------|-------------|------------|------------|
-| Hoch | Autocomplete-Dropdown in Stadionsuche | Issue 1, Schweregrad 4 – blockiert zentralen Workflow, TP-2 konnte Aufgabe 1 nicht abschliessen | Nein – geplant |
-| Hoch | Erfolgsmeldung (Toast) nach Speichern eines Besuchs | Issue 2, Schweregrad 3 – beide TPs unsicher ob Eintrag gespeichert wurde | Nein – geplant |
-| Mittel | Lösch-Funktion für Lieblingsclubs implementieren | Issue 3, Schweregrad 2 – kein Entfernen-Button vorhanden, beide TPs betroffen | Nein – geplant |
-| Mittel | W/U/N-Badges in W/D/L umbenennen + Tooltip ergänzen | Issue 4, Schweregrad 2 – TP-1 konnte Aufgabe 4 nicht abschliessen | Nein – geplant |
-| Tief | Einheitliche Sprache (Deutsch) konsequent durchsetzen | Issue 5, Schweregrad 1 – Sprachmischung wirkt inkonsistent | Nein – abwägen |
+| Hoch | Autocomplete-Dropdown in Stadionsuche | Issue 1, Schweregrad 4 – blockiert zentralen Workflow, TP-2 konnte Aufgabe 1 nicht abschliessen | Ja |
+| Hoch | Erfolgsmeldung (Toast) nach Speichern eines Besuchs | Issue 2, Schweregrad 3 – beide TPs unsicher ob Eintrag gespeichert wurde | Ja |
+| Mittel | Lösch-Funktion für Lieblingsclubs implementieren | Issue 3, Schweregrad 2 – kein Entfernen-Button vorhanden, beide TPs betroffen | Ja |
+| Mittel | W/U/N-Badges in W/D/L umbenennen + Tooltip ergänzen | Issue 4, Schweregrad 2 – TP-1 konnte Aufgabe 4 nicht abschliessen | Ja |
+| Tief | Einheitliche Sprache (Deutsch) konsequent durchsetzen | Issue 5, Schweregrad 1 – Sprachmischung wirkt inkonsistent | Nein  |
 
 ## 4. Erweiterungen [Optional]
-
-_Dieses Kapitel wird nach Abschluss der Prototype- und Validate-Phase ergänzt, falls Erweiterungen über den Mindestumfang hinaus implementiert werden._
 
 > **Hinweis:** Jede Erweiterung ist separat nach dem folgenden Schema zu beschreiben.
 
@@ -636,20 +634,6 @@ _Dieses Kapitel wird nach Abschluss der Prototype- und Validate-Phase ergänzt, 
 - **Ausblick v2.0:** Als zukünftige Erweiterung ist eine Sprachumschaltung (Deutsch / Englisch) geplant, um weitere Zielgruppen anzusprechen — insbesondere internationale Fussballfans ausserhalb der Deutschschweiz.
 - **Aus Evaluation abgeleitet?:** Ja — Issue 5, Schweregrad 1. Bewusst nicht umgesetzt, da die Sprachmischung einer inhaltlichen Logik folgt.
 
----
-
-## Aktualisierte Verbesserungstabelle (3.5)
-
-Ersetze die bestehende «Abgeleitete Verbesserungen»-Tabelle in Kapitel 3.5 durch:
-
-| Priorität | Verbesserung | Begründung | Umgesetzt? |
-|-----------|-------------|------------|------------|
-| Hoch | Autocomplete-Dropdown in Stadionsuche | Issue 1, Schweregrad 4 – blockiert zentralen Workflow, TP-2 konnte Aufgabe 1 nicht abschliessen | Ja – siehe Kap. 4.5 |
-| Hoch | Erfolgsmeldung (Toast) nach Speichern eines Besuchs | Issue 2, Schweregrad 3 – beide TPs unsicher ob Eintrag gespeichert wurde | Ja – siehe Kap. 4.6 |
-| Mittel | Lösch-Funktion für Lieblingsclubs implementieren | Issue 3, Schweregrad 2 – kein Entfernen-Button vorhanden, beide TPs betroffen | Ja – siehe Kap. 4.7 |
-| Mittel | W/U/N-Badges in W/D/L umbenennen + Tooltip ergänzen | Issue 4, Schweregrad 2 – TP-1 konnte Aufgabe 4 nicht abschliessen | Ja – siehe Kap. 4.8 |
-| Tief | Einheitliche Sprache durchsetzen | Issue 5, Schweregrad 1 – Sprachmischung wirkt inkonsistent | Nein – bewusste Entscheidung, siehe Kap. 4.9 |
-
 ## 5. Projektorganisation [Optional]
 
 - **Repository & Struktur:** Das Projekt wird in einem GitHub-Repository verwaltet. Die Dokumentation (README.md) liegt im Root-Verzeichnis. Der Sourcecode befindet sich im `src/`-Ordner, unterteilt in `lib/` (wiederverwendbare Module und Komponenten) und `routes/` (Seiten und Server-Logik). Das Repository ist für die Dozierenden zugänglich (Usernamen: mmeisterhans und bkuehnis).
@@ -695,7 +679,7 @@ Der KI-Einsatz folgte einem iterativen Ansatz: Zu Beginn wurde Claude ein vollst
 
 KI-Tools haben die Entwicklung deutlich beschleunigt — besonders bei repetitiven Aufgaben (CRUD-Operationen, CSS-Styling) und bei der Strukturierung umfangreicher Dokumente. Die grösste Einschränkung war, dass Claude initial Svelte-4-Syntax generierte, die manuell auf Svelte-5-Runes migriert werden musste. Das grösste Risiko beim KI-Einsatz ist die unkritische Übernahme von generiertem Output — dem wurde durch konsequentes Testen und explizite Begründung aller Entscheidungen entgegengewirkt.
 
-## 7. Anhang [Optional]
+## 7. Anhang
 
 - **Quellen & Referenzen:**
   - Polarsteps (https://www.polarsteps.com) — Referenz-App für Reise-Tracking-Konzept
@@ -709,8 +693,4 @@ KI-Tools haben die Entwicklung deutlich beschleunigt — besonders bei repetitiv
   - `claude-design-prompt-stadium-tracker.md` — Vollständiger Design-Prompt für Claude Design (9 Sektionen)
   - `stadium_tracker_logo.png` — Logo der App
   - `prompt_visitcard_komponente.md` — Detaillierter Prompt für die VisitCard-Komponentenerstellung via Copilot
-  - Figma-Mockup: _[URL hier einfügen]_
-
-- **Testskript & Materialien:** _[nach Evaluation ergänzen — Link/Datei]_
-
-- **Rohdaten/Auswertung:** _[nach Evaluation ergänzen — Link/Datei]_
+  - Figma: [Stadium-Tracker-Mockup](https://www.figma.com/proto/CooiE2cF4AOjLH7drOVrI1/Stadion-Tracker-Mockup?node-id=2-4&p=f&t=AoMLgHLf6laGRUnx-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=2%3A4)
