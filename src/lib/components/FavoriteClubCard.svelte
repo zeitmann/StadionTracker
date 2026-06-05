@@ -27,9 +27,9 @@
     <div class="stats-row">
         <span class="chip">{club.totalGames} Spiele</span>
         <div class="wdl-row">
-            <span class="badge badge-w">{club.wins}W</span>
-            <span class="badge badge-d">{club.draws}U</span>
-            <span class="badge badge-l">{club.losses}N</span>
+            <span class="badge badge-w" title="W = Win (Sieg)">{club.wins}W</span>
+            <span class="badge badge-d" title="D = Draw (Unentschieden)">{club.draws}D</span>
+            <span class="badge badge-l" title="L = Loss (Niederlage)">{club.losses}L</span>
         </div>
     </div>
 
