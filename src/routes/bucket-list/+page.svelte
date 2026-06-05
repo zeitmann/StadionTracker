@@ -4,6 +4,10 @@
 
     let { data, form } = $props();
     let showForm = $state(false);
+    let stadiumQuery = $state('');
+    let stadiumSuggestions = $state([]);
+    let selectedStadium = $state(null);
+    let showSuggestions = $state(false);
     let toast = $state(null);
     let toastTimeout = $state(null);
 
@@ -13,9 +17,29 @@
         toastTimeout = setTimeout(() => { toast = null; }, 3000);
     }
 
+    async function searchStadiums() {
+        if (stadiumQuery.length < 2) {
+            stadiumSuggestions = [];
+            showSuggestions = false;
+            return;
+        }
+        const res = await fetch(`/api/stadiums?q=${encodeURIComponent(stadiumQuery)}`);
+        stadiumSuggestions = await res.json();
+        showSuggestions = true;
+    }
+
+    function selectStadium(stadium) {
+        selectedStadium = stadium;
+        stadiumQuery = stadium.name;
+        showSuggestions = false;
+        stadiumSuggestions = [];
+    }
+
     $effect(() => {
         if (form?.added) {
             showForm = false;
+            stadiumQuery = '';
+            selectedStadium = null;
             showToast('Stadion zur Bucket List hinzugefügt!');
         }
         if (form?.visited) {
@@ -55,25 +79,48 @@
             <form method="POST" action="?/add" use:enhance={() => {
                 return ({ update }) => { update(); };
             }}>
-                <div class="form-group">
-                    <label for="name">Stadionname *</label>
-                    <input id="name" name="name" type="text" placeholder="z.B. Wembley Stadium" required />
+                <div class="form-group autocomplete-wrapper">
+                    <label for="stadiumQuery">Stadion *</label>
+                    <input
+                        type="text"
+                        id="stadiumQuery"
+                        placeholder="z.B. Wembley Stadium, Allianz Arena..."
+                        autocomplete="off"
+                        value={stadiumQuery}
+                        oninput={(e) => { stadiumQuery = e.target.value; searchStadiums(); }}
+                        onfocus={() => { if (stadiumSuggestions.length > 0) showSuggestions = true; }}
+                    />
+                    {#if showSuggestions && stadiumSuggestions.length > 0}
+                        <ul class="suggestions-list">
+                            {#each stadiumSuggestions as s}
+                                <li onclick={() => selectStadium(s)}>
+                                    <span class="suggestion-name">{s.name}</span>
+                                    <span class="suggestion-meta">{s.city}, {s.country}</span>
+                                </li>
+                            {/each}
+                        </ul>
+                    {/if}
+                    {#if showSuggestions && stadiumSuggestions.length === 0 && stadiumQuery.length >= 2}
+                        <div class="no-results">Kein Stadion gefunden – bitte Schreibweise prüfen</div>
+                    {/if}
+                    {#if selectedStadium}
+                        <input type="hidden" name="stadiumId" value={selectedStadium.id} />
+                    {/if}
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="city">Stadt *</label>
-                        <input id="city" name="city" type="text" placeholder="z.B. London" required />
+
+                {#if selectedStadium}
+                    <div class="selected-info">
+                        {selectedStadium.city}, {selectedStadium.country}
                     </div>
-                    <div class="form-group">
-                        <label for="country">Land *</label>
-                        <input id="country" name="country" type="text" placeholder="z.B. England" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="capacity">Kapazität (optional)</label>
-                    <input id="capacity" name="capacity" type="number" placeholder="90000" />
-                </div>
-                <button type="submit" class="btn-primary btn-full">Zur Bucket List hinzufügen</button>
+                {/if}
+
+                <button
+                    type="submit"
+                    class="btn-primary btn-full"
+                    disabled={!selectedStadium}
+                >
+                    Zur Bucket List hinzufügen
+                </button>
             </form>
         </div>
     {/if}
@@ -294,6 +341,83 @@
     @keyframes slideUp {
         from { opacity: 0; transform: translateX(-50%) translateY(8px); }
         to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* Autocomplete */
+    .autocomplete-wrapper {
+        position: relative;
+    }
+
+    .suggestions-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #FFFFFF;
+        border: 1px solid #EDEDEB;
+        border-radius: 10px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        list-style: none;
+        margin: 4px 0 0 0;
+        padding: 4px 0;
+        z-index: 100;
+        max-height: 240px;
+        overflow-y: auto;
+    }
+
+    .suggestions-list li {
+        display: flex;
+        flex-direction: column;
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    .suggestions-list li:hover {
+        background: #F5F5F3;
+    }
+
+    .suggestion-name {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1A1A18;
+    }
+
+    .suggestion-meta {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 12px;
+        color: #888780;
+        margin-top: 2px;
+    }
+
+    .no-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #FFFFFF;
+        border: 1px solid #EDEDEB;
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        color: #E24B4A;
+        margin-top: 4px;
+        z-index: 100;
+    }
+
+    .selected-info {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        color: #6B6B63;
+        margin: -8px 0 14px 0;
+    }
+
+    button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none !important;
     }
 
     /* Responsive */

@@ -576,6 +576,75 @@ _Dieses Kapitel wird nach Abschluss der Prototype- und Validate-Phase ergänzt, 
   - **Frontend:** `src/routes/+page.svelte` — Lieblingsclubs-Sektion mit 2-spaltigem Grid, togglebarem Inline-Formular (Clubname, Kürzel, Heimstadion-Dropdown)
 - **Aus Evaluation abgeleitet?:** Nein, Entscheidung aus inhaltlichen Qualitätsgründen (Win-Rate ohne Teamkontext sinnlos).
 
+### 4.5 Autocomplete-Stadionsuche (aus Evaluation abgeleitet)
+
+- **Beschreibung & Nutzen:** Das Stadion-Suchfeld beim Erfassen eines neuen Besuchs wurde durch eine Autocomplete-Suche ersetzt. Beim Tippen ab zwei Zeichen erscheint ein Dropdown mit passenden Stadien aus der Datenbank (Name, Stadt, Land). Bei keinem Treffer erscheint die Meldung «Kein Stadion gefunden – bitte Schreibweise prüfen». Nach der Auswahl wird die `stadiumId` als Hidden Field gesetzt — manuelle Eingabe von Stadt und Land entfällt damit vollständig.
+- **Wo umgesetzt:**
+  - **API-Route:** `src/routes/api/stadiums/+server.js` — GET-Endpoint mit MongoDB `$match` (case-insensitiv) und `$group` zur Deduplizierung identischer Stadionnamen. Gibt maximal 8 Treffer zurück.
+  - **Frontend:** <br>
+  **-** `src/routes/besuche/+page.svelte` - Neuer State `stadiumQuery`, `stadiumSuggestions`, `selectedStadium`. Funktion `searchStadiums()` ruft den API-Endpoint auf. Funktion `selectStadium()` setzt das ausgewählte Stadion und schliesst das Dropdown.
+   <br>
+  **-** `src/routes/bucket-list/+page.svelte` - Gleiche Autocomplete-Logik 
+  wie auf der Besuche-Seite. Das manuelle Formular (Stadionname, Stadt, Land, 
+  Kapazität) wurde ersetzt. Stadt und Land werden automatisch aus dem Datensatz 
+  übernommen. Der Speichern-Button ist deaktiviert solange kein Stadion ausgewählt ist.
+- **Aus Evaluation abgeleitet?:** Ja — Issue 1, Schweregrad 4. TP-2 konnte Aufgabe 1 nicht abschliessen weil «Letzigrund» keine Ergebnisse lieferte.
+
+---
+
+### 4.6 Toast-Notifications nach Aktionen (aus Evaluation abgeleitet)
+
+- **Beschreibung & Nutzen:** Nach dem Speichern, Löschen oder anderen Aktionen erscheint eine kurze Toast-Notification am unteren Bildschirmrand, die nach 3 Sekunden automatisch verschwindet. Dies gibt dem Nutzer sofortiges Feedback, ob eine Aktion erfolgreich war. Fehlermeldungen erscheinen als roter Toast. Ersetzt die bisherigen statischen Alert-Blöcke, die nach einem Seitenreload verschwanden.
+- **Wo umgesetzt:**
+  - **`src/routes/besuche/+page.svelte`** — Toast für «Besuch gespeichert», «Besuch gelöscht» und Fehlermeldungen.
+  - **`src/routes/bucket-list/+page.svelte`** — Toast für «Stadion zur Bucket List hinzugefügt», «Stadion als besucht markiert», «Stadion entfernt» und Fehlermeldungen.
+  - **`src/routes/+page.svelte`** — Toast für «Lieblingsclub hinzugefügt», «Lieblingsclub entfernt» und Fehlermeldungen.
+  - Jede Seite implementiert die gleiche `showToast(message, type)`-Funktion mit `setTimeout` für Auto-close nach 3000ms. CSS-Animation `slideUp` für sanftes Einblenden.
+- **Aus Evaluation abgeleitet?:** Ja — Issue 2, Schweregrad 3. Beide Testpersonen waren nach dem Speichern unsicher, ob der Eintrag wirklich gespeichert wurde.
+
+---
+
+### 4.7 Lösch-Funktion für Lieblingsclubs (aus Evaluation abgeleitet)
+
+- **Beschreibung & Nutzen:** Lieblingsclubs können nun über ein Lösch-Icon (Mülleimer) direkt auf der `FavoriteClubCard` entfernt werden. Das Icon erscheint in der oberen rechten Ecke der Karte und wird bei Hover rot hervorgehoben. Nach dem Löschen erscheint ein Toast («Lieblingsclub entfernt»).
+- **Wo umgesetzt:**
+  - **Backend:** `src/routes/+page.server.js` — Neue Form Action `deleteFavoriteClub`, die den Club anhand des Namens aus der `favorite_clubs`-Collection löscht.
+  - **Komponente:** `src/lib/components/FavoriteClubCard.svelte` — Neues Prop `onDelete`, Trash2-Icon aus lucide-svelte, neues `.card-header`-Layout für Name + Delete-Button nebeneinander.
+  - **Frontend:** `src/routes/+page.svelte` — Neue Funktion `deleteClub(name)` ruft die Server Action auf und lädt die Seite neu.
+- **Aus Evaluation abgeleitet?:** Ja — Issue 3, Schweregrad 2. Beide Testpersonen fanden keinen Weg, einen einmal hinzugefügten Lieblingsclub wieder zu entfernen.
+
+---
+
+### 4.8 W/D/L-Badges mit Tooltip (aus Evaluation abgeleitet)
+
+- **Beschreibung & Nutzen:** Die Ergebnis-Badges in der `FavoriteClubCard` wurden von den deutschen Abkürzungen W/U/N auf die international gebräuchlichen W/D/L (Win/Draw/Loss) umgestellt. Zusätzlich wurde jedem Badge ein `title`-Attribut als Tooltip hinzugefügt («W = Win (Sieg)», «D = Draw (Unentschieden)», «L = Loss (Niederlage)»), der bei Hover erscheint.
+- **Wo umgesetzt:**
+  - **Komponente:** `src/lib/components/FavoriteClubCard.svelte` — Badge-Labels und title-Attribute angepasst.
+- **Aus Evaluation abgeleitet?:** Ja — Issue 4, Schweregrad 2. TP-1 konnte Aufgabe 4 nicht abschliessen, weil die deutschen Abkürzungen W/U/N im internationalen Fussballkontext ungebräuchlich sind.
+
+---
+
+### 4.9 Sprachkonsistenz — bewusste Entscheidung (aus Evaluation abgeleitet)
+
+- **Beschreibung:** TP-2 bemängelte in der Evaluation, dass Texte in der App teilweise auf Deutsch und teilweise auf Englisch sind. Nach Analyse des Befunds wurde entschieden, die Sprachmischung beizubehalten und nicht zu vereinheitlichen.
+- **Begründung:** Die App ist grundsätzlich auf Deutsch — alle Menüs, Labels, Formulare und Meldungen sind deutschsprachig. Englische Begriffe in der App (Bucket List, Stadium Tracker, W/D/L) sind etablierte Anglizismen, die im Fussball- und Tech-Kontext international verbreitet sind und von der primären Zielgruppe (18–35-jährige, technikaffine Fussballfans) verstanden werden. Eine vollständige Eindeutschung («Wunschliste» statt «Bucket List», «Stadion-Verfolger» statt «Stadium Tracker») würde den Charakter der App verändern und wirkt im Kontext von Sport-Tracking-Apps weniger zeitgemäss.
+- **Ausblick v2.0:** Als zukünftige Erweiterung ist eine Sprachumschaltung (Deutsch / Englisch) geplant, um weitere Zielgruppen anzusprechen — insbesondere internationale Fussballfans ausserhalb der Deutschschweiz.
+- **Aus Evaluation abgeleitet?:** Ja — Issue 5, Schweregrad 1. Bewusst nicht umgesetzt, da die Sprachmischung einer inhaltlichen Logik folgt.
+
+---
+
+## Aktualisierte Verbesserungstabelle (3.5)
+
+Ersetze die bestehende «Abgeleitete Verbesserungen»-Tabelle in Kapitel 3.5 durch:
+
+| Priorität | Verbesserung | Begründung | Umgesetzt? |
+|-----------|-------------|------------|------------|
+| Hoch | Autocomplete-Dropdown in Stadionsuche | Issue 1, Schweregrad 4 – blockiert zentralen Workflow, TP-2 konnte Aufgabe 1 nicht abschliessen | Ja – siehe Kap. 4.5 |
+| Hoch | Erfolgsmeldung (Toast) nach Speichern eines Besuchs | Issue 2, Schweregrad 3 – beide TPs unsicher ob Eintrag gespeichert wurde | Ja – siehe Kap. 4.6 |
+| Mittel | Lösch-Funktion für Lieblingsclubs implementieren | Issue 3, Schweregrad 2 – kein Entfernen-Button vorhanden, beide TPs betroffen | Ja – siehe Kap. 4.7 |
+| Mittel | W/U/N-Badges in W/D/L umbenennen + Tooltip ergänzen | Issue 4, Schweregrad 2 – TP-1 konnte Aufgabe 4 nicht abschliessen | Ja – siehe Kap. 4.8 |
+| Tief | Einheitliche Sprache durchsetzen | Issue 5, Schweregrad 1 – Sprachmischung wirkt inkonsistent | Nein – bewusste Entscheidung, siehe Kap. 4.9 |
+
 ## 5. Projektorganisation [Optional]
 
 - **Repository & Struktur:** Das Projekt wird in einem GitHub-Repository verwaltet. Die Dokumentation (README.md) liegt im Root-Verzeichnis. Der Sourcecode befindet sich im `src/`-Ordner, unterteilt in `lib/` (wiederverwendbare Module und Komponenten) und `routes/` (Seiten und Server-Logik). Das Repository ist für die Dozierenden zugänglich (Usernamen: mmeisterhans und bkuehnis).
