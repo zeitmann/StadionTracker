@@ -156,7 +156,12 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
 
   Das Design folgt einem eigens entwickelten Design-System mit den Corporate-Farben Primary Green (#1D9E75), Accent Orange (#D85A30), Red (#E24B4A) und Gray (#888780). Die Typografie basiert auf DM Sans (Überschriften und Fliesstext) und JetBrains Mono (Badges, Scores).
 
-  _Screenshots der fertigen Screens: [Screenshots hier einfügen]_
+  _Screenshots der fertigen Screens:_
+
+![Dashboard](doku/screenshots/dashboard_screenshot.png)
+![Besuche](doku/screenshots/besuche_screenshot.png)
+![Bucket List](doku/screenshots/bucketlist_screenshot.png)
+![Karte](doku/screenshots/karte_screenshot.png)
 
 - **Designentscheidungen:**
 
