@@ -162,5 +162,12 @@ export const actions = {
         });
 
         return { success: true };
+    },
+
+    deleteFavoriteClub: async ({ request }) => {
+        const data = await request.formData();
+        const name = data.get('name');
+        await db.collection('favorite_clubs').deleteOne({ name });
+        return { deleted: true };
     }
 };

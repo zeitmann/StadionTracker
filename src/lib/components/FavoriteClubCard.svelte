@@ -1,19 +1,27 @@
 <script>
-    import { MapPin } from 'lucide-svelte';
-
-    let { club } = $props();
+    import { MapPin, Trash2 } from 'lucide-svelte';
+    let { club, onDelete } = $props();
 </script>
 
 <div class="club-card">
-    <div class="card-top">
-        <div class="name-row">
-            <h3>{club.name}</h3>
-            <span class="short-badge">{club.shortName}</span>
+    <div class="card-header">
+        <div class="card-top">
+            <div class="name-row">
+                <h3>{club.name}</h3>
+                <span class="short-badge">{club.shortName}</span>
+            </div>
+            <p class="stadium-name">
+                <MapPin size={13} strokeWidth={1.75} />
+                {club.stadiumName}
+            </p>
         </div>
-        <p class="stadium-name">
-            <MapPin size={13} strokeWidth={1.75} />
-            {club.stadiumName}
-        </p>
+        <button
+            class="btn-delete"
+            onclick={() => onDelete(club.name)}
+            title="Lieblingsclub entfernen"
+        >
+            <Trash2 size={14} strokeWidth={1.75} />
+        </button>
     </div>
 
     <div class="stats-row">
@@ -166,5 +174,28 @@
 
     .winrate-pct.red {
         color: #e24b4a;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .btn-delete {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        color: #a3a39b;
+        border-radius: 6px;
+        transition: color 0.15s, background 0.15s;
+        flex-shrink: 0;
+    }
+
+    .btn-delete:hover {
+        color: #E24B4A;
+        background: rgba(226, 75, 74, 0.08);
     }
 </style>
