@@ -133,7 +133,7 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
   7. Luca wechselt zum Dashboard und sieht die aktualisierten Stats.
 
 - **Mockup:** Ein klickbares Mockup wurde erstellt, das die vier Hauptscreens (Dashboard, Besuche, Bucket List, Karte) mit dem definierten Design-System zeigt. Das Mockup dient als visuelle Referenz für die Prototype-Phase.
-  - _URL: [Figma-Link hier einfügen]_
+  - _URL: https://www.figma.com/proto/CooiE2cF4AOjLH7drOVrI1/Stadion-Tracker-Mockup?node-id=0-1&t=wUeCkauVaIrlK3yF-1_
 
 ### 3.4 Prototype
 
@@ -344,7 +344,7 @@ In der Sketch-Phase wurden drei Varianten für die Grundstruktur der App erarbei
 
   Der MongoDB Connection String wird als Environment Variable (`MONGODB_URI`) gespeichert — lokal in der `.env`-Datei (nicht im Repository) und auf Netlify als Environment Variable konfiguriert. Die Datenbankverbindung wird in `src/lib/db.js` zentral hergestellt und in allen Server-Routen importiert.
 
-- **Deployment:** Die App ist deployt auf Netlify: _[stadiontracker.netlify.app — URL hier bestätigen]_
+- **Deployment:** Die App ist deployt auf Netlify: https://stadiontracker.netlify.app
 
 - **Besondere Entscheidungen:**
   - **Svelte 5 Runes-Modus:** Das Projekt verwendet Svelte 5 mit dem neuen Runes-Modus (`$props()`, `$state()`, `$effect()`, `onclick` statt `on:click`). Dies erforderte Anpassungen gegenüber der gängigen Svelte-4-Syntax, bietet aber eine modernere und explizitere Reaktivität.
@@ -648,7 +648,7 @@ Ersetze die bestehende «Abgeleitete Verbesserungen»-Tabelle in Kapitel 3.5 dur
 ## 5. Projektorganisation [Optional]
 
 - **Repository & Struktur:** Das Projekt wird in einem GitHub-Repository verwaltet. Die Dokumentation (README.md) liegt im Root-Verzeichnis. Der Sourcecode befindet sich im `src/`-Ordner, unterteilt in `lib/` (wiederverwendbare Module und Komponenten) und `routes/` (Seiten und Server-Logik). Das Repository ist für die Dozierenden zugänglich (Usernamen: mmeisterhans und bkuehnis).
-  - _URL: [GitHub-Repository-URL hier einfügen]_
+  - _URL: https://github.com/zeitmann/StadionTracker_
 
 - **Commit-Praxis:** Sprechende Commit-Messages in deutscher Sprache, die beschreiben, was geändert wurde. Beispiele bisheriger Commits:
   - `feat: add favorite clubs section to dashboard with inline form`
@@ -661,53 +661,34 @@ Ersetze die bestehende «Abgeleitete Verbesserungen»-Tabelle in Kapitel 3.5 dur
 ### 6.1 KI-Tools
 
 - **Eingesetzte Tools:**
-  - **Claude (Anthropic):** Claude Opus / Sonnet via claude.ai — für Ideenfindung, Design-System-Entwicklung, Prompt-Erstellung, Dokumentation, Code-Unterstützung und Debugging
-  - **Claude Design:** Separates Tool zur Erstellung von UI-Mockups basierend auf einem detaillierten Design-Prompt
-  - **Claude Copilot (VS Code):** Für Code-Generierung direkt in der IDE, z. B. Erstellung der VisitCard-Komponente anhand eines vorbereiteten Prompts
-  - _[Weitere Tools hier ergänzen, falls verwendet, z. B. GitHub Copilot, ChatGPT, etc.]_
+  - **Claude (Anthropic):** claude.ai — für Ideenfindung, Design-System-Entwicklung, Dokumentation, Code-Unterstützung und Debugging
+  - **GitHub Copilot (VS Code):** Für Code-Generierung direkt in der IDE
 
 - **Zweck & Umfang:**
-  - **Ideenfindung & Konzeption:** Claude wurde eingesetzt, um die HMW-Frage zu formulieren, Varianten in der Sketch-Phase zu entwickeln und die Entscheidungskriterien für die Decide-Phase zu strukturieren.
-  - **Design-System:** Das vollständige Design-System (Farbpalette, Typografie, Spacing, Komponenten) wurde in Zusammenarbeit mit Claude erarbeitet und als detaillierter Design-Prompt dokumentiert (siehe `claude-design-prompt-stadium-tracker.md`).
-  - **Mockup-Erstellung:** Ein 9-sektiger Design-Prompt wurde für Claude Design erstellt, um Mockups zu generieren.
-  - **Dokumentation:** Die Projektdokumentation (README.md) wurde mit Claude-Unterstützung strukturiert und formuliert.
-  - **Code-Implementierung:** Claude hat die initialen SvelteKit-Dateien für den Hauptworkflow erstellt (Besuche-Seite mit Formular und Server-Logik, Dashboard mit Statistiken, MongoDB-Verbindung). Der Code wurde anschliessend manuell angepasst und getestet. Für die VisitCard-Komponente wurde ein detaillierter Prompt in Claude erstellt und dann via Claude Copilot in VS Code umgesetzt.
-  - **Debugging:** Claude hat bei der Fehlerbehebung unterstützt, z. B. Svelte 4 → Svelte 5 Runes-Migration (`export let` → `$props()`, `on:click` → `onclick`, `$:` → `$effect()`), falsches Arbeitsverzeichnis im Terminal, und Netlify-Deployment-Konfiguration.
+  KI-Tools wurden in allen Projektphasen unterstützend eingesetzt: Konzeption (HMW-Frage, Sketch-Varianten), Design-System (Farbpalette, Typografie, Komponenten), Mockup-Erstellung, Dokumentation (README) sowie Code-Implementierung und Debugging. Generierter Code wurde stets manuell geprüft, getestet und bei Bedarf angepasst.
 
 - **Eigene Leistung (Abgrenzung):**
-  - Die Problemanalyse, Zielgruppendefinition und persönliche Motivation für das Projekt stammen vollständig vom Autor.
-  - Die Entscheidung für das Projekt "Stadium Tracker" (vs. alternativer Idee "Intelligenter Lernplaner") wurde eigenständig getroffen.
-  - Die Sketch-Varianten wurden konzeptionell selbst erarbeitet; Claude hat bei der Ausformulierung und Strukturierung unterstützt.
-  - Die Entscheidung für Variante C (Dashboard-zentriert) und die Verwerfung von Variante D (Social) basiert auf eigenem Urteil.
-  - Das Design-System (Farbwahl, Logo-Konzept "Track your ground") wurde in iterativer Zusammenarbeit mit Claude entwickelt — die finalen Entscheidungen lagen beim Autor.
-  - Setup und Konfiguration (GitHub-Repository, MongoDB Atlas, Netlify-Deployment, Environment Variables) wurden eigenständig durchgeführt, mit Anleitungen von Claude.
-  - Code wurde von Claude generiert, aber manuell in die IDE übertragen, getestet und bei Bedarf angepasst (z. B. Svelte 5 Fixes).
-  - Die Usability-Evaluation wird eigenständig geplant, durchgeführt und ausgewertet.
+  - Die Projektidee «Stadium Tracker» sowie die Entscheidung dagegen für den alternativen «Intelligenten Lernplaner» wurden eigenständig getroffen.
+  - Problemanalyse, Zielgruppendefinition und die Proto-Persona «Luca» basieren auf eigener Recherche und Reflexion.
+  - Die drei Sketch-Varianten (A/B/C) wurden konzeptionell selbst erarbeitet. Die Entscheidung für Variante C (Dashboard-zentriert) und die Verwerfung von Variante D (Social/Sharing) basieren auf eigenem Urteil, gestützt auf die im Modul vermittelte Methodik.
+  - Die Farbwahl, das Logo-Konzept («Track your ground») und die Design-Entscheidungen (Mobile-first, Bottom Tab Bar, eigenes CSS statt Bootstrap) wurden eigenständig getroffen.
+  - Inhaltliche Designentscheidungen — wie das Entfernen der globalen Win-Rate, das Verschieben der W/D/L-Badges von der VisitCard zur FavoriteClubCard, oder die Verwerfung des Social-Features — wurden selbst analysiert und begründet.
+  - Setup und Konfiguration (GitHub-Repository, MongoDB Atlas, Netlify-Deployment, Environment Variables) wurden eigenständig durchgeführt.
+  - Die Usability-Evaluation wurde selbst geplant, mit zwei echten Testpersonen durchgeführt, ausgewertet und die daraus abgeleiteten Verbesserungen eigenständig priorisiert und umgesetzt.
+  - Alle KI-generierten Inhalte (Code, Dokumentation) wurden kritisch geprüft, getestet und bei Bedarf korrigiert. Die Verantwortung für Korrektheit und Qualität liegt vollständig beim Autor.
+
+
+---
 
 ### 6.2 Prompt-Vorgehen
 
-Beim Prompting wurde ein iterativer Ansatz verfolgt:
+Der KI-Einsatz folgte einem iterativen Ansatz: Zu Beginn wurde Claude ein vollständiger Projektkontext gegeben (Modul-Anforderungen, Zielgruppe, Bewertungskriterien), der als Knowledge-Base in einem Claude-Projekt hinterlegt wurde. Anschliessend wurde phasenweise gearbeitet — von der Ideenfindung über das Design-System bis zur Code-Implementierung. Für Copilot wurden gezielte, detaillierte Prompts erstellt, die Dateiname, Props, Svelte-5-Syntax und Abhängigkeiten explizit vorgaben. Alle KI-Outputs wurden kritisch geprüft und bei Bedarf korrigiert, insbesondere bei Svelte-4/5-Inkompatibilitäten.
 
-1. **Projektkontext aufbauen:** Zu Beginn wurde Claude ein umfassender Projektkontext gegeben — Modul-Anforderungen, Bewertungskriterien, Zielgruppe, Semesterprogramm. Dieses Wissen wurde in einem Claude-Projekt als Knowledge-Base hinterlegt, sodass alle Folge-Prompts auf diesen Kontext zugreifen können.
-
-2. **Schrittweises Vorgehen:** Statt eines einzelnen grossen Prompts wurde phasenweise gearbeitet — zuerst Ideenfindung, dann Sketch-Varianten, dann Design-System, dann Mockup-Prompt, dann Code-Implementierung. Jeder Schritt baute auf dem vorherigen auf.
-
-3. **Design-Prompt als zentrales Artefakt:** Der 9-sektige Design-Prompt (`claude-design-prompt-stadium-tracker.md`) beschreibt das gesamte UI in präziser, strukturierter Form — von Farbcodes über Pixel-Angaben bis zu Beispieldaten. Dieser Prompt wurde über mehrere Iterationen verfeinert.
-
-4. **Gezielte Prompts für Copilot:** Für die VisitCard-Komponente wurde ein separater, detaillierter Prompt geschrieben, der dem Claude Copilot in VS Code exakt vorgibt, welche Datei zu erstellen ist, welche Props die Komponente hat, welche Svelte-5-Syntax zu verwenden ist, und welche bestehenden Dateien umgebaut werden müssen. Dieser Ansatz hat sich als effektiver erwiesen als generische Prompts.
-
-5. **Kritische Prüfung:** Alle KI-Outputs wurden kritisch geprüft und bei Bedarf angepasst. Insbesondere musste generierter Svelte-Code von Svelte-4-Syntax auf Svelte-5-Runes umgeschrieben werden.
+---
 
 ### 6.3 Reflexion
 
-**Nutzen:**
-KI-Tools waren besonders wertvoll bei der Strukturierung umfangreicher Dokumente, bei der Code-Generierung für repetitive Aufgaben (CRUD-Operationen, CSS-Styling), und beim Debugging. Die Möglichkeit, ein Projekt mit Knowledge-Base in Claude anzulegen, war hilfreich, um den Kontext über viele Gespräche hinweg zu erhalten. Der detaillierte Prompt für den Copilot hat gezeigt, dass präzise Vorgaben zu deutlich besserem Output führen als vage Anweisungen.
-
-**Grenzen:**
-Claude generierte initial Svelte-4-Code, obwohl das Projekt Svelte 5 mit Runes verwendet. Dies erforderte manuelle Nacharbeit (`export let` → `$props()`, `on:click` → `onclick`, `$:` → `$effect()`). Claude Design ist ein separates Tool ohne Zugriff auf das Claude-Projekt — der Design-Prompt musste daher als eigenständiges, vollständiges Dokument erstellt werden. Zudem kann KI keine echten Nutzerfeedbacks simulieren — die Usability-Evaluation muss mit realen Testpersonen durchgeführt werden.
-
-**Risiken & Qualitätssicherung:**
-Das grösste Risiko beim KI-Einsatz ist die Übernahme von generierten Inhalten ohne kritische Reflexion. Um dem entgegenzuwirken, wurden alle generierten Varianten und Entscheidungen explizit begründet und hinterfragt. Technischer Code wurde lokal getestet und nicht blind übernommen — mehrere Svelte-5-Inkompatibilitäten wurden so entdeckt und behoben. Die Verantwortung für Korrektheit, Urheberrecht und Qualität liegt vollständig beim Autor.
+KI-Tools haben die Entwicklung deutlich beschleunigt — besonders bei repetitiven Aufgaben (CRUD-Operationen, CSS-Styling) und bei der Strukturierung umfangreicher Dokumente. Die grösste Einschränkung war, dass Claude initial Svelte-4-Syntax generierte, die manuell auf Svelte-5-Runes migriert werden musste. Das grösste Risiko beim KI-Einsatz ist die unkritische Übernahme von generiertem Output — dem wurde durch konsequentes Testen und explizite Begründung aller Entscheidungen entgegengewirkt.
 
 ## 7. Anhang [Optional]
 
